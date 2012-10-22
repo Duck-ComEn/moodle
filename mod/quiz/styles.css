@@ -360,7 +360,7 @@ bank window's title is prominent enough*/
 #page-mod-quiz-edit .questioncontentcontainer div.randomquestionqlist{background-color:#eee;}
 #page-mod-quiz-edit .questioncontentcontainer div.randomquestionqlist ul{color:#555;}
 #page-mod-quiz-edit .questioncontentcontainer div.randomquestionqlist .totalquestionsinrandomqcategory{color:#000;}
-#page-mod-quiz-edit .categoryinfo {background-color:#eee;border-bottom:1px solid #bbb;}
+#page-mod-quiz-edit .categoryinfo {background:none;border-bottom:1px solid #bbb;}
 #page-mod-quiz-edit .questionsortoptions {background-color:#ddd;}
 
 #page-mod-quiz-edit div.questionbank{background-color:#e6e6ff;}
