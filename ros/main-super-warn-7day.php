@@ -1,5 +1,6 @@
 ﻿<?php
 	require_once('Connections/ros.php');
+	require_once('Connections/file.php');
 	if(!isset($_SESSION)){
 	@session_start();
 	}

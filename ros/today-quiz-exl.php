@@ -1,241 +1,25 @@
 ﻿<?php
-	require_once('Connections/ros.php');
-	if(!isset($_SESSION)){
-	@session_start();
-	}
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-		
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<script language="javascript">
-	function fncAlert(name)
-	{
-	alert('หัวหน้างานของพนักงานคนนี้คือ : คุณ '+name);
-	}
-	</script>
-	<link type="text/css" href="jquery-ui-1.7.2.custom/css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />	
-		<script type="text/javascript" src="jquery-ui-1.7.2.custom/js/jquery-1.3.2.min.js"></script>
-		<script type="text/javascript" src="jquery-ui-1.7.2.custom/js/jquery-ui-1.7.2.custom.min.js"></script>
-		<script type="text/javascript">
-			$(function(){
-
-				// Accordion
-				$("#accordion").accordion({ header: "h3" });
+require_once('Connections/ros.php');
+if(!isset($_SESSION)){
+session_start();
+}
 	
-				// Tabs
-				$('#tabs').tabs();
-	
-
-				// Dialog			
-				$('#dialog').dialog({
-					autoOpen: false,
-					width: 600,
-					buttons: {
-						"Ok": function() { 
-							$(this).dialog("close"); 
-						}, 
-						"Cancel": function() { 
-							$(this).dialog("close"); 
-						} 
-					}
-				});
-				
-				// Dialog Link
-				$('#dialog_link').click(function(){
-					$('#dialog').dialog('open');
-					return false;
-				});
-
-				// Datepicker
-				$('#datepicker').datepicker({
-					inline: true
-				});
-				
-				// Slider
-				$('#slider').slider({
-					range: true,
-					values: [17, 67]
-				});
-				
-				// Progressbar
-				$("#progressbar").progressbar({
-					value: 20 
-				});
-				
-				//hover states on the static widgets
-				$('#dialog_link, ul#icons li').hover(
-					function() { $(this).addClass('ui-state-hover'); }, 
-					function() { $(this).removeClass('ui-state-hover'); }
-				);
-				
-			});
-		</script>
-		<style type="text/css">
-			/*demo page css*/
-			body{ font: 62.5% "Trebuchet MS", sans-serif; margin: 50px;}
-			.demoHeaders { margin-top: 2em; }
-			#dialog_link {padding: .4em 1em .4em 20px;text-decoration: none;position: relative;}
-			#dialog_link span.ui-icon {margin: 0 5px 0 0;position: absolute;left: .2em;top: 50%;margin-top: -8px;}
-			ul#icons {margin: 0; padding: 0;}
-			ul#icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
-			ul#icons span.ui-icon {float: left; margin: 0 4px;}
-		</style>	
-	<?php
-		switch($_SESSION['MM_UserRight']){
-		case "superadmin" : 
-	?>
-	<title>Benchmark Garde - SuperAdministrator::แจ้งเตือน 14 วัน</title>
-	<link rel="shortcut icon" href="BEI_icon.ico" type="image/x-icon" />
-	<link rel="icon" href="BEI_icon.ico" type="image/x-icon" />
-	<link href="style.css" rel="stylesheet" type="text/css" />
-	<link href="styles_table.css" rel="stylesheet" type="text/css" />
-</head>
-<body>
-	<div id="topheader">
-	<div class="logo"></div>
-	</div>
-	<div id="search_strip"></div>
-	
-	<div id="body_area">
-		<div class="left">
-			<div class="left_menutop"></div>
-			<div class="left_menu_area">
-			<div align="right">
-			    <?php
-				//import menu from database
-					$result=mysql_query("SELECT
-											ros_menu.`name`,
-											ros_menu.link
-										FROM
-											ros_menu
-										WHERE
-											ros_menu.`mode` = 'superadmin'
-										ORDER BY
-											ros_menu.sort ASC");
-						@$num_rows=mysql_num_rows($result);
-						if(!$num_rows){
-							echo "Can not connect Database";
-						}
-						while($data = mysql_fetch_array($result)){
-						?>
-						<a href="<?php echo $data['link'] ;?>" class="left_menu"><?php echo $data['name']; ?></a><br />
-						<?php
-						}
-						?>
-						</div>
-			</div>
-		</div>
-		
-		<div class="midarea">
-			<div class="head">Welcome <?php print ucfirst($_SESSION['MM_FirstName']).' '.ucfirst($_SESSION['MM_LastName']) ;?></div>
-			<div class="body_textarea">
-				<div align="justify" style="font-size: 16pt">แจ้งเตือนเหลืออีก 14 วันวิชาสอบหมดอายุ</div>
-				<div align="justify">
-				  <p>แสดงรายชื่อพนักงานทั้งหมดที่มีอยู่ในฐานข้อมูล</p>
-				  <p>&nbsp;</p>
-				  <form id="form1" name="form1" method="get" action="super_admin-warn-14day.php">
-				                    <strong>แสดงเฉพาะ Supervisor</strong>
-						<label><?php
-												$sql = "SELECT DISTINCT
-														mdl_user.institution
-														FROM
-														mdl_user
-														WHERE
-														mdl_user.institution <> ''
-														ORDER BY
-														mdl_user.institution ASC";
-														$query = mysql_query($sql);
-														echo "<select id='sel_product' name='sel_product'>";
-														echo "<option>All</option>";
-														while($rs = mysql_fetch_array($query)){
-														$data = $rs['0'];
-														echo "<option>$data</option>";
-														}
-														echo "</select>"; 
-						?></label>
-						<label>
-							<input type="submit" name="Query" value=" Query " />
-						</label>
-				  </form>
-			    </div>
-				<div><a href="superadmin-send-mail-14.php?mail=<?php echo $_GET[sel_product]; ?>"><img src="images/Mail_logo4.png" align="right" border="0" width="64" height="64" alt="Mail"></a><a href="admin-pdf-14.php?sup=<?php echo $_GET[sel_product]?>" target="_blank"><img src="images/PDF_Logo.png" align="right" border="0" width="64" height="64"></a><a href="admin-exl-14.php?sup=<?php echo $_GET[sel_product]?>" target="_blank"><img src="images/Excel2007Logo.png" align="right" border="0" width="60" height="64"></a></div>
-			</div>
-			<div class="body_textarea">
-				<div id="mytable">
-				 <table id="mytable"  cellspacing="0">
-					 <?php
-					 
-					 $_SESSION['$viewbysup'] = $_GET[sel_product];
-					 
-						function duration($begin,$end){
-    						$thisday=getdate();
-							$remain=intval(strtotime($begin)-$thisday[0]);
-							$wan=floor($remain/86400)+1;
-							$l_wan=$remain%86400;
-							$hour=floor($l_wan/3600);
-							$l_hour=$l_wan%3600;
-							$minute=floor($l_hour/60);
-							$second=$l_hour%60;
-							if($second<0){
-								return "expire";
-							}else return $wan."วัน";
-						}
-						/*$result1=mysql_query("SELECT
-												ros_remark.atid,
-												ros_remark.remark,
-												ros_remark.date,
-												ros_remark.notvisible,
-												ros_remark.id,
-												ros_remark.manual
-											FROM
-												ros_remark
-											WHERE ros_remark.atid <> ''");
-						@$num_rows1=mysql_num_rows($result1);
-						$r=1;
-						while($remark=mysql_fetch_array($result1)){
-						$not.="'$remark[atid]'";
-		
-						if($r!=$num_rows1){
-						$not.=',';
-						}
-						$r++;
-						}
-						if($not!=''){
-						$not="and mdl_quiz_attempts.id NOT IN(".$not.")";
-						}
-
-						
-						
-						$result3=mysql_query("SELECT
-													ros_remark.atid,
-													ros_remark.remark,
-													ros_remark.date,
-													ros_remark.notvisible,
-													ros_remark.id,
-													ros_remark.manual
-												FROM
-													ros_remark
-												WHERE
-													ros_remark.manual <> ''");
-						@$num_rows3=mysql_num_rows($result3);
-						$r=1;
-						while($remark1=mysql_fetch_array($result3)){
-						$not1.="'$remark1[manual]'";
-		
-						if($r!=$num_rows3){
-						$not1.=',';
-						}
-						$r++;
-						}
-
-						if($not1!=''){
-						$not1="AND ros_score.id NOT IN (".$not1.")";
-						}
-						*/
-			
-						if($_GET[sel_product]=='All' || $_GET[sel_product]==''){
+function duration($begin,$end){
+    $thisday=getdate();
+	$remain=intval(strtotime($begin)-$thisday[0]);
+	$wan=floor($remain/86400)+1;
+	$l_wan=$remain%86400;
+	$hour=floor($l_wan/3600);
+	$l_hour=$l_wan%3600;
+	$minute=floor($l_hour/60);
+	$second=$l_hour%60;
+	if($second<0){
+	return "expire";
+	}else return $wan;
+}
+header("Content-Type: application/vnd.ms-excel");
+header('Content-Disposition: attachment; filename="report-quiz-all.xls"');
+if($_GET[sup]=='All' || $_GET[sup]==''){
 						// notshow								
 						$result1=mysql_query("SELECT
 												ros_remark.atid,
@@ -288,16 +72,21 @@
 						if($not1!=''){
 						$not1="AND ros_score.id NOT IN (".$not1.")";
 						}							
-						$result=mysql_query("SELECT
+						$result=mysql_query("SELECT DISTINCT
+													
 													mdl_user.idnumber,
 													mdl_user.firstname,
 													mdl_user.lastname,
 													mdl_quiz_attempts.attempt,
 													mdl_course.fullname,
+													mdl_course.idnumber AS courseid,
+													
 													mdl_quiz_attempts.sumgrades,
 													mdl_quiz_attempts.timefinish,
 													mdl_quiz_attempts.id,
 													mdl_user.institution
+												
+													
 											FROM
 													mdl_quiz_attempts
 											INNER JOIN mdl_user ON mdl_user.id = mdl_quiz_attempts.userid
@@ -306,32 +95,9 @@
 											WHERE
 													mdl_quiz_attempts.sumgrades = mdl_quiz.sumgrades and
 													mdl_course.visible = 1
-													".$not."
 											GROUP BY
 													mdl_user.id,
-													mdl_quiz_attempts.quiz
-													
-											union all SELECT
-														mdl_user.idnumber,
-														mdl_user.firstname,
-														mdl_user.lastname,
-														ros_score.added,
-														ros_score.`subject`,
-														ros_score.max,
-														ros_score.date_time,
-														CONCAT('m',ros_score.id,'&fname=',mdl_user.firstname,'&lname=',mdl_user.lastname,'&subject=',REPLACE(ros_score.`subject`, ' ', '+')) AS id,
-														mdl_user.institution
-										FROM
-														ros_score
-										INNER JOIN mdl_user ON ros_score.uid = mdl_user.id
-										INNER JOIN ros_subject ON ros_subject.`name` = ros_score.`subject`
-										
-										WHERE
-													mdl_user.username = 'teeprk' AND
-													ros_score.max = ros_score.added AND
-													ros_subject.vision = 1
-													".$not1."
-										ORDER BY 7");
+													mdl_quiz_attempts.quiz");
 						
 														
 						//don't show remark moodle
@@ -424,7 +190,7 @@
 											INNER JOIN mdl_user ON mdl_quiz_attempts.userid = mdl_user.id
 											WHERE
 													ros_remark.atid <> '' AND
-													mdl_user.institution = '".$_GET[sel_product]."'");
+													mdl_user.institution = '".$_GET[sup]."'");
 						@$num_rows1=mysql_num_rows($result1);
 						$r=1;
 						while($remark=mysql_fetch_array($result1)){
@@ -454,7 +220,7 @@
 											INNER JOIN mdl_user ON ros_score.uid = mdl_user.id
 											WHERE
 													ros_remark.manual <> '' AND
-													mdl_user.institution = '".$_GET[sel_product]."'");
+													mdl_user.institution = '".$_GET[sup]."'");
 						@$num_rows3=mysql_num_rows($result3);
 						$r=1;
 						while($remark1=mysql_fetch_array($result3)){
@@ -488,7 +254,7 @@
 											WHERE
 													mdl_quiz_attempts.sumgrades = mdl_quiz.sumgrades and
 													mdl_course.visible = 1 and
-													mdl_user.institution = '".$_GET[sel_product]."'
+													mdl_user.institution = '".$_GET[sup]."'
 													".$not."
 											GROUP BY
 													mdl_user.id,
@@ -508,10 +274,9 @@
 										INNER JOIN mdl_user ON ros_score.uid = mdl_user.id
 										INNER JOIN ros_subject ON ros_subject.`name` = ros_score.`subject`
 										WHERE
-													mdl_user.institution = '".$_GET[sel_product]."' AND
+													mdl_user.institution = '".$_GET[sup]."' AND
 													ros_score.max = ros_score.added AND
-													ros_subject.vision = 1
-													".$not1."
+													ros_subject.vision = 1 ".$not1."
 										ORDER BY 7");
 						
 						
@@ -536,7 +301,7 @@
 												INNER JOIN mdl_user ON mdl_quiz_attempts.userid = mdl_user.id
 												INNER JOIN mdl_course ON mdl_quiz.course = mdl_course.id
 											WHERE
-												mdl_user.institution = '".$_GET[sel_product]."' and
+												mdl_user.institution = '".$_GET[sup]."' and
 												mdl_course.visible = 1");
 						//dot't view moodle
 						$resultnot=mysql_query("SELECT
@@ -557,7 +322,7 @@
 												INNER JOIN mdl_course ON mdl_quiz.course = mdl_course.id
 												INNER JOIN ros_warn_notshow ON mdl_quiz_attempts.id = ros_warn_notshow.atid
 												WHERE
-														mdl_user.institution = '".$_GET[sel_product]."'");
+														mdl_user.institution = '".$_GET[sup]."'");
 												
 						//don't show remark manual
 						$result2=mysql_query("SELECT
@@ -577,7 +342,7 @@
 											INNER JOIN ros_subject ON ros_subject.`name` = ros_score.`subject`
 											WHERE
 												ros_subject.vision = 1
-												mdl_user.institution = '".$_GET[sel_product]."'");
+												mdl_user.institution = '".$_GET[sup]."'");
 											
 						//don't view manual 					
 						$resultnot1=mysql_query("SELECT
@@ -595,19 +360,17 @@
 												INNER JOIN mdl_user ON ros_score.uid = mdl_user.id
 												INNER JOIN ros_warn_notshow ON ros_warn_notshow.manual = ros_score.id
 												WHERE
-														mdl_user.institution = '".$_GET[sel_product]."'");
+														mdl_user.institution = '".$_GET[sup]."'");
 						
 						
 						
-						
-						
-							echo"<center><h3>แสดงในสังกัดคุณ ".ucwords($_GET[sel_product])."</h3></center>";
+			
 							}
 							
 							
 							@$num_rows=mysql_num_rows($result);
 							if(!$num_rows){
-						//	echo "can not connect database";
+							echo "can not connect database";
 							}
 							$p=1;
 							$t=0;
@@ -618,7 +381,10 @@
 					$a[$i][1]=$data['firstname'].' '.$data['lastname'];
 					$a[$i][2]=$data['fullname'];
 					$a[$i][3]=$data['timefinish'];
+					$a[$i][4]=$data['sumgrades'];
 					$a[$i][5]=$data['institution'];
+					//$a[$i][8]=$data['shortname'];
+					$a[$i][8]=$data['courseid'];
 					$i++;
 					}
 					
@@ -626,7 +392,7 @@
 					
 					
 					$u=1;
-						echo"<tr><th>No.</th><th>E/N</th><th>Name</th><th>Course</th><th>Time/(status)</th><th>RemainTime/remark/sup</th></tr>";
+						echo"<table border=1><tr><th>No.</th><th>E/N</th><th>Name</th><th>Score</th><th>Percent</th><th>Course ID</th><th>Course Name</th><th>Time</th></tr>";
 				/*		$result1=mysql_query("SELECT
 												mdl_user.idnumber,
 												mdl_user.firstname,
@@ -682,7 +448,7 @@
 							}
 						$q=$q[mon].'/'.$q[mday].'/'.$q[year];
 						
-		//				echo"<tr><td align=center>".($u++).".</td><td>{$data1['idnumber']}</td><td>".$data1['firstname'].' '.$data1['lastname']."</td><td>{$data1['fullname']}&nbsp;&nbsp;<img src=images/ICON_Remark/".$data1['remark']."_x20.gif></td><td>".$q;if(@in_array($idat, $notshow)){ echo"&nbsp;&nbsp;<a href=show.php?id=".$idat."><img src=images/show1.gif></a>";}else{echo"&nbsp;&nbsp<a href=notshow.php?id=".$idat."><img src=images/hide1.gif></a>";}echo"</td><td>";if($qn=='expire'){echo"<a href=update-expire.php?id=".$idat.">expire</a> &nbsp;&nbsp;(".$dateremark.")";}else {echo $qn;};echo"&nbsp;&nbsp;<input name=\"btnButton1\" type=\"button\" value=\"S\" OnClick=\"JavaScript:fncAlert('".ucwords($data1['institution'])."');\"></td></tr>";
+			//			echo"<tr><td align=center>".($u++).".</td><td>{$data1['idnumber']}</td><td>".$data1['firstname'].' '.$data1['lastname']."</td><td>{$data1['fullname']}</td><td>".$q."</td><td>expire</td><td>".ucwords($data1['institution'])."</td></tr>";
 						$i++;
 						}
 					/*	$result2=mysql_query("SELECT
@@ -730,7 +496,7 @@
 								$today['mday']='0'.$today['mday'];
 							}
 							$next_date=$today[mon].'/'.$today[mday].'/'.$today[year];
-			//			echo"<tr><td align=center>".($u++).".</td><td>{$data2['idnumber']}</td><td>".$data2['firstname'].' '.$data2['lastname']."</td><td>{$data2['subject']}&nbsp;&nbsp;<img src=images/ICON_Remark/".$data2['remark']."_x20.gif></td><td>".$next_date; if(@in_array($data2['manual'], $notshow1)){ echo"&nbsp;&nbsp;<a href=show.php?id=m".$data2['manual']."><img src=images/show1.gif></a>";}else{echo"&nbsp;&nbsp<a href=notshow.php?id=m".$data2['manual']."><img src=images/hide1.gif></a>";}echo"</td><td><a href=update-expire.php?id=m".$data2['manual'].">expire</a> &nbsp;&nbsp;(".$data2['date'].")&nbsp;&nbsp;<input name=\"btnButton1\" type=\"button\" value=\"S\" OnClick=\"JavaScript:fncAlert('".ucwords($data2['institution'])."');\"></td></tr>";
+			//			echo"<tr><td align=center>".($u++).".</td><td>{$data2['idnumber']}</td><td>".$data2['firstname'].' '.$data2['lastname']."</td><td>{$data2['subject']}</td><td>".$next_date."</td><td>expire</td><td>".ucwords($data2['institution'])."</td></tr>";
 						$i++;
 						}
 												
@@ -789,8 +555,8 @@
 						
 							$today = getdate($a[$i][3]);
 							
-							$nextyear  = mktime(0, 0, 0, $today['mon'],$today['mday'],   $today['year']+1);
-							$today = getdate($nextyear);
+							//$nextyear  = mktime(0, 0, 0, $today['mon'],$today['mday'],   $today['year']+1);
+							//$today = getdate($nextyear);
 							if(strlen($today['mon'])<=1){
 								$today['mon']='0'.$today['mon'];
 							}
@@ -798,44 +564,14 @@
 								$today['mday']='0'.$today['mday'];
 							}
 							$a[$i][3]=$today['mon'].'/'.$today['mday'].'/'.$today['year'];
-							$a[$i][4]=duration($today['year'].'-'.$today['mon'].'-'.$today['mday'] ."00:00:01",date("Y-m-d H:i:s"));
-	
-						if($a[$i][4]>14||$a[$i][4]=='expire'){
-							continue;
-						}
-	
-							echo"<tr><td align=center>".$u++.".</td><td>".$a[$i][0]."</td><td>{$a[$i][1]}</td><td>{$a[$i][2]}</td><td>".$a[$i][3]; if(@in_array($idat, $notshow3)){ echo"&nbsp;&nbsp;<a href=super_admin-show14.php?id=".$idat."><img src=images/show1.gif></a>";}else{echo"&nbsp;&nbsp<a href=super_admin-notshow14.php?id=".$idat."><img src=images/hide1.gif></a>";}echo"</td><td>";if($a[$i][4]=='expire'){echo "<a href=expire.php?id=".$idat.">expire</a>";}else {echo $a[$i][4];}echo"&nbsp;&nbsp;<input name=\"btnButton1\" type=\"button\" value=\"S\" OnClick=\"JavaScript:fncAlert('".ucwords($a[$i][5])."');\"></td></tr>";
-						}
+							//$a[$i][4]=duration($today['year'].'-'.$today['mon'].'-'.$today['mday'] ."00:00:01",date("Y-m-d H:i:s"));
+							
+						
+						if($_GET['str']==$a[$i][3]){
+							echo"<tr><td align=center>".$u++.".</td><td>".$a[$i][0]."</td><td>{$a[$i][1]}</td><td align=center>".number_format($a[$i][4], 2, '.', ' ')."</td><td>".number_format(($a[$i][4]*100)/$a[$i][4], 2, '.', ' ')."%</td><td>{$a[$i][8]}</td><td>{$a[$i][2]}</td><td>".$a[$i][3]."</td></tr>";
+							}
 					
-					if($u==1){
-					echo "<caption align=\"bottom\">No data </caption>";
-					}else{
-					echo "<caption align=\"bottom\">result : ".($u-1)." </caption>";}
-					?>
-				</table>
-			
 				
-				
-				
-				</div>
-			</div>
-			<!-- remark detail-->
-			<?php
-			
-				require_once('remark_detail.php');
-			?>
-		</div>
-	</div>
-
-	<!-- Fotter area-->
-	<?php
-		require_once('footer.php'); 
-	?>
-</html>
-<?php
-	break ;
-	default : echo"<center><h2>หน้านี้อนุญาติให้หผู้ดูแลระบบสูงสุดเข้าใช้เท่านั้น</h2></center><bt><br>";
-	echo"<center><h4>ระบบจะพาท่านกลับสู่หน้าหลัก ภายใน 3 วินาที</h4></center>";
-	echo "<meta http-equiv='refresh' content=3;URL=index.php>";
-	break ; }
+				}
+				echo"</table>";
 ?>

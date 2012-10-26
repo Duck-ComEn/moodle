@@ -1,9 +1,5 @@
 ﻿<?php
-
-	require_once('Connections/ros.php'); 
-	require_once('Connections/file.php'); 
-	
-	
+	require_once('Connections/ros.php');
 	if(!isset($_SESSION)){
 	@session_start();
 	}
@@ -11,12 +7,164 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+		
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<link rel="stylesheet" type="text/css" href="style_custom.css">
+	<script language="javascript">
+	function fncAlert(name)
+	{
+	alert('หัวหน้างานของพนักงานคนนี้คือ : คุณ '+name);
+	}
+	</script>
+	<link type="text/css" href="jquery-ui-1.7.2.custom/css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />	
+		<script type="text/javascript" src="jquery-ui-1.7.2.custom/js/jquery-1.3.2.min.js"></script>
+		<script type="text/javascript" src="jquery-ui-1.7.2.custom/js/jquery-ui-1.7.2.custom.min.js"></script>
+		<script type="text/javascript">
+			$(function(){
+
+				// Accordion
+				$("#accordion").accordion({ header: "h3" });
+	
+				// Tabs
+				$('#tabs').tabs();
+	
+
+				// Dialog			
+				$('#dialog').dialog({
+					autoOpen: false,
+					width: 600,
+					buttons: {
+						"Ok": function() { 
+							$(this).dialog("close"); 
+						}, 
+						"Cancel": function() { 
+							$(this).dialog("close"); 
+						} 
+					}
+				});
+				
+				// Dialog Link
+				$('#dialog_link').click(function(){
+					$('#dialog').dialog('open');
+					return false;
+				});
+
+				// Datepicker
+				$('#datepicker').datepicker({
+					inline: true
+				});
+				
+				// Slider
+				$('#slider').slider({
+					range: true,
+					values: [17, 67]
+				});
+				
+				// Progressbar
+				$("#progressbar").progressbar({
+					value: 20 
+				});
+				
+				//hover states on the static widgets
+				$('#dialog_link, ul#icons li').hover(
+					function() { $(this).addClass('ui-state-hover'); }, 
+					function() { $(this).removeClass('ui-state-hover'); }
+				);
+				
+			});
+		</script>
+		<style type="text/css">
+			/*demo page css*/
+			body{ font: 62.5% "Trebuchet MS", sans-serif; margin: 50px;}
+			.demoHeaders { margin-top: 2em; }
+			#dialog_link {padding: .4em 1em .4em 20px;text-decoration: none;position: relative;}
+			#dialog_link span.ui-icon {margin: 0 5px 0 0;position: absolute;left: .2em;top: 50%;margin-top: -8px;}
+			ul#icons {margin: 0; padding: 0;}
+			ul#icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
+			ul#icons span.ui-icon {float: left; margin: 0 4px;}
+		</style>	
 	<?php
-	  echo "<center><div class=sending>";
 		switch($_SESSION['MM_UserRight']){
 		case "superadmin" : 
+	?>
+	<title>Benchmark Garde - SuperAdministrator::แจ้งเตือน 7 วัน</title>
+	<link rel="shortcut icon" href="BEI_icon.ico" type="image/x-icon" />
+	<link rel="icon" href="BEI_icon.ico" type="image/x-icon" />
+	<link href="style.css" rel="stylesheet" type="text/css" />
+	<link href="styles_table.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div id="topheader">
+	<div class="logo"></div>
+	</div>
+	<div id="search_strip"></div>
+	
+	<div id="body_area">
+		<div class="left">
+			<div class="left_menutop"></div>
+			<div class="left_menu_area">
+			<div align="right">
+			    <?php
+				//import menu from database
+					$result=mysql_query("SELECT
+											ros_menu.`name`,
+											ros_menu.link
+										FROM
+											ros_menu
+										WHERE
+											ros_menu.`mode` = 'superadmin'
+										ORDER BY
+											ros_menu.sort ASC");
+						@$num_rows=mysql_num_rows($result);
+						if(!$num_rows){
+							echo "Can not connect Database";
+						}
+						while($data = mysql_fetch_array($result)){
+						?>
+						<a href="<?php echo $data['link'] ;?>" class="left_menu"><?php echo $data['name']; ?></a><br />
+						<?php
+						}
+						?>
+						</div>
+			</div>
+		</div>
+		
+		<div class="midarea">
+			<div class="head">Welcome <?php print ucfirst($_SESSION['MM_FirstName']).' '.ucfirst($_SESSION['MM_LastName']) ;?></div>
+			<div class="body_textarea">
+				<div align="justify" style="font-size: 16pt">แจ้งเตือนเหลืออีก 7 วันวิชาสอบหมดอายุ</div>
+				<div align="justify">
+				  <p>แสดงรายชื่อพนักงานทั้งหมดที่มีอยู่ในฐานข้อมูล</p>
+				  <p>&nbsp;</p>
+				  <form id="form1" name="form1" method="get" action="super_admin-warn-7day.php">
+				                    <strong>แสดงเฉพาะ Supervisor</strong>
+						<label><?php
+												$sql = "SELECT DISTINCT
+														mdl_user.institution
+														FROM
+														mdl_user
+														WHERE
+														mdl_user.institution <> ''
+														ORDER BY
+														mdl_user.institution ASC";
+														$query = mysql_query($sql);
+														echo "<select id='sel_product' name='sel_product'>";
+														echo "<option>All</option>";
+														while($rs = mysql_fetch_array($query)){
+														$data = $rs['0'];
+														echo "<option>$data</option>";
+														}
+														echo "</select>"; 
+						?></label>
+						<label>
+							<input type="submit" name="Query" value=" Query " />
+						</label>
+				  </form>
+			    </div>
+				
+			</div>
+			<div class="body_textarea">
+			 <div class=sending>
+		<?php
 			$i=0;
 			$p=0;
 			$r=0;
@@ -58,11 +206,11 @@
 			$header .= "Content-type: text/html; charset=UTF-8\r\n" ;
 
 			if( @mail( $to , $subject , $message , $header ) ){
-				echo "<div class=com>Mail Complete</div> to ".ucwords($array_name[$mm++])."<br>";
-				echo "<meta http-equiv='refresh' content=3;URL=super_admin-warn-7day.php>";
+				echo "<font color=green>Mail Complete </font>to ".ucwords($array_name[$mm++])."<br>";
+				echo "<meta http-equiv='refresh' content=5;URL=super_admin-warn-7day.php>";
 			}else{
-				echo "<div class=incom>Mail Incomplete</div> to ".ucwords($array_name[$mm++])."<br>";
-				echo "<meta http-equiv='refresh' content=3;URL=super_admin-warn-7day.php>";
+				echo "<font color=red>Mail Incomplete</font> to ".ucwords($array_name[$mm++])."<br>";
+				echo "<meta http-equiv='refresh' content=5;URL=super_admin-warn-7day.php>";
 			}
 			}
 	
@@ -96,11 +244,11 @@ $header .="MIME-Version: 1.0\r\n";
 $header .= "Content-type: text/html; charset=UTF-8\r\n" ;
 
 			if( @mail( $to , $subject , $message , $header ) ){
-				echo "Mail <div class=com>Complete</div> to ".ucwords($_GET['mail'])."<br>";
-				echo "<meta http-equiv='refresh' content=3;URL=super_admin-warn-7day.php?sel_product=".$firstname."+".$lastname.">";
+				echo "<font color=green>Mail Complete </font>to ".ucwords($firstname." ".$lastname)."<br>";
+				echo "<meta http-equiv='refresh' content=5;URL=super_admin-warn-7day.php>";
 			}else{
-				echo "Mail <div class=incom>Incomplete</div> to ".ucwords($_GET['mail'])."<br>";
-				echo "<meta http-equiv='refresh' content=3;URL=super_admin-warn-7day.php?sel_product=".$lastname."+".$lastname.">";
+				echo "<font color=red>Mail Incomplete</font> to ".ucwords($firstname." ".$lastname)."<br>";
+				echo "<meta http-equiv='refresh' content=5;URL=super_admin-warn-7day.php>";
 			}
 			}
 			
@@ -112,13 +260,33 @@ $header .= "Content-type: text/html; charset=UTF-8\r\n" ;
 			//echo "<script language='javascript'>alert('ส่ง E-mail ถึง supervisor เรียบร้อยแล้ว');</script>";
 			//echo "<meta http-equiv='refresh' content='0;URL=mail.php'>";
 	
+	?>
+</div>
+
+			
+			
+			
 	
-echo"</div>";
-?>
+			</div>
+			
+			
+		</div>
+	</div>
+
+	<!-- Fotter area-->
+	<?php
+		require_once('footer.php'); 
+	?>
+</html>
 <?php
 	break ;
-	default : echo"<center><h2>หน้านี้อนุญาติให้ผู้ดูแลระบบเข้าใช้เท่านั้น</h2></center><bt><br>";
+	default : echo"<center><h2>หน้านี้อนุญาติให้หผู้ดูแลระบบสูงสุดเข้าใช้เท่านั้น</h2></center><bt><br>";
 	echo"<center><h4>ระบบจะพาท่านกลับสู่หน้าหลัก ภายใน 3 วินาที</h4></center>";
 	echo "<meta http-equiv='refresh' content=3;URL=index.php>";
 	break ; }
 ?>
+
+
+
+
+		

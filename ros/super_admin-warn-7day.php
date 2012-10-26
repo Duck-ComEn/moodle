@@ -86,7 +86,7 @@
 		switch($_SESSION['MM_UserRight']){
 		case "superadmin" : 
 	?>
-	<title>Benchmark Garde - SuperAdministrator::แจ้งเตือน 7 วัน</title>
+	<title>Benchmark Garde - SuperAdministrator::แจ้งเตือนคนที่มาสอบวันนี้</title>
 	<link rel="shortcut icon" href="BEI_icon.ico" type="image/x-icon" />
 	<link rel="icon" href="BEI_icon.ico" type="image/x-icon" />
 	<link href="style.css" rel="stylesheet" type="text/css" />

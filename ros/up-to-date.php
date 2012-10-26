@@ -1,5 +1,6 @@
 ﻿<?php
 	require_once('Connections/ros.php');
+require_once('calendar/calendar/classes/tc_calendar.php');
 	if(!isset($_SESSION)){
 	@session_start();
 	}
@@ -7,7 +8,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-		
+	<link href="calendar/calendar/calendar.css" rel="stylesheet" type="text/css" />
+	<script language="javascript" src="calendar/calendar/calendar.js"></script>
+
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<script language="javascript">
 	function fncAlert(name)
@@ -15,6 +18,13 @@
 	alert('หัวหน้างานของพนักงานคนนี้คือ : คุณ '+name);
 	}
 	</script>
+	<style type="text/css">
+	body { font-size: 11px; font-family: "verdana"; }
+	pre { font-family: "verdana"; font-size: 10px; background-color: #FFFFCC; padding: 5px 5px 5px 5px; }
+	pre .comment { color: #008000; }
+	pre .builtin { color:#FF0000;  }
+	</style>
+	
 	<link type="text/css" href="jquery-ui-1.7.2.custom/css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />	
 		<script type="text/javascript" src="jquery-ui-1.7.2.custom/js/jquery-1.3.2.min.js"></script>
 		<script type="text/javascript" src="jquery-ui-1.7.2.custom/js/jquery-ui-1.7.2.custom.min.js"></script>
@@ -86,7 +96,7 @@
 		switch($_SESSION['MM_UserRight']){
 		case "superadmin" : 
 	?>
-	<title>Benchmark Garde - SuperAdministrator::แจ้งเตือน 14 วัน</title>
+	<title>Benchmark Garde - SuperAdministrator::ผู้ทดสอบวันนี้</title>
 	<link rel="shortcut icon" href="BEI_icon.ico" type="image/x-icon" />
 	<link rel="icon" href="BEI_icon.ico" type="image/x-icon" />
 	<link href="style.css" rel="stylesheet" type="text/css" />
@@ -131,12 +141,12 @@
 		<div class="midarea">
 			<div class="head">Welcome <?php print ucfirst($_SESSION['MM_FirstName']).' '.ucfirst($_SESSION['MM_LastName']) ;?></div>
 			<div class="body_textarea">
-				<div align="justify" style="font-size: 16pt">แจ้งเตือนเหลืออีก 14 วันวิชาสอบหมดอายุ</div>
+				<div align="justify" style="font-size: 16pt">รายชื่อพนักงานที่ทำการทดสอบวันนี้</div>
 				<div align="justify">
 				  <p>แสดงรายชื่อพนักงานทั้งหมดที่มีอยู่ในฐานข้อมูล</p>
 				  <p>&nbsp;</p>
-				  <form id="form1" name="form1" method="get" action="super_admin-warn-14day.php">
-				                    <strong>แสดงเฉพาะ Supervisor</strong>
+				  <form id="form1" name="form1" method="get" action="super_admin-warn-7day.php">
+				                   
 						<label><?php
 												$sql = "SELECT DISTINCT
 														mdl_user.institution
@@ -147,20 +157,49 @@
 														ORDER BY
 														mdl_user.institution ASC";
 														$query = mysql_query($sql);
-														echo "<select id='sel_product' name='sel_product'>";
-														echo "<option>All</option>";
+														//echo "<select id='sel_product' name='sel_product'>";
+														//echo "<option>All</option>";
 														while($rs = mysql_fetch_array($query)){
 														$data = $rs['0'];
-														echo "<option>$data</option>";
+														//echo "<option>$data</option>";
 														}
-														echo "</select>"; 
+														//echo "</select>"; 
 						?></label>
 						<label>
-							<input type="submit" name="Query" value=" Query " />
+							
 						</label>
-				  </form>
-			    </div>
-				<div><a href="superadmin-send-mail-14.php?mail=<?php echo $_GET[sel_product]; ?>"><img src="images/Mail_logo4.png" align="right" border="0" width="64" height="64" alt="Mail"></a><a href="admin-pdf-14.php?sup=<?php echo $_GET[sel_product]?>" target="_blank"><img src="images/PDF_Logo.png" align="right" border="0" width="64" height="64"></a><a href="admin-exl-14.php?sup=<?php echo $_GET[sel_product]?>" target="_blank"><img src="images/Excel2007Logo.png" align="right" border="0" width="60" height="64"></a></div>
+				  </form> 
+				  
+				  <form name="form1" method="get" action="">
+              <div style="float: left;">
+                <div style="float: left;">
+                  <?php
+					  $myCalendar = new tc_calendar("date", true, false);
+					  $myCalendar->setIcon("calendar/calendar/images/iconCalendar.gif");
+					 // $myCalendar->setDate(date('d', strtotime($date2)), date('m', strtotime($date2)), date('Y', strtotime($date2)));
+					  $myCalendar->setPath("calendar/calendar/");
+					  $myCalendar->setYearInterval(2012, 2050);
+					  //$myCalendar->dateAllow("", '2009-11-03', false);
+					  $myCalendar->setAlignment('left', 'bottom');
+					  //$myCalendar->setSpecificDate(array("2011-04-01", "2011-04-04", "2011-12-25"), 0, 'year');
+					  $myCalendar->writeScript();showInput
+					  ?>
+                </div>
+              </div>
+              <p> <input type="submit" name="button2" id="button2" value="Check the value" >   </p>
+			  </form>
+			  
+	    </div>
+		<br>
+		<?php
+		$dateSelect=$_GET['date'];
+		list($y,$m,$d)=explode('-',$dateSelect);
+		$strSelectDate=$m.'/'.$d.'/'.$y;
+		echo "select date: $strSelectDate";
+		?>
+		
+				
+				<div><a href="today-quiz-pdf.php?str=<?php echo $strSelectDate;?>" target="_blank"><img src="images/PDF_Logo.png" align="right" border="0" width="64" height="64"></a><a href="today-quiz-exl.php?str=<?php echo $strSelectDate;?>" target="_blank"><img src="images/Excel2007Logo.png" align="right" border="0" width="60" height="64"></a></div>
 			</div>
 			<div class="body_textarea">
 				<div id="mytable">
@@ -288,16 +327,21 @@
 						if($not1!=''){
 						$not1="AND ros_score.id NOT IN (".$not1.")";
 						}							
-						$result=mysql_query("SELECT
+						$result=mysql_query("SELECT DISTINCT
+													
 													mdl_user.idnumber,
 													mdl_user.firstname,
 													mdl_user.lastname,
 													mdl_quiz_attempts.attempt,
 													mdl_course.fullname,
+													mdl_course.idnumber AS courseid,
+													
 													mdl_quiz_attempts.sumgrades,
 													mdl_quiz_attempts.timefinish,
 													mdl_quiz_attempts.id,
 													mdl_user.institution
+												
+													
 											FROM
 													mdl_quiz_attempts
 											INNER JOIN mdl_user ON mdl_user.id = mdl_quiz_attempts.userid
@@ -306,32 +350,14 @@
 											WHERE
 													mdl_quiz_attempts.sumgrades = mdl_quiz.sumgrades and
 													mdl_course.visible = 1
-													".$not."
 											GROUP BY
 													mdl_user.id,
-													mdl_quiz_attempts.quiz
-													
-											union all SELECT
-														mdl_user.idnumber,
-														mdl_user.firstname,
-														mdl_user.lastname,
-														ros_score.added,
-														ros_score.`subject`,
-														ros_score.max,
-														ros_score.date_time,
-														CONCAT('m',ros_score.id,'&fname=',mdl_user.firstname,'&lname=',mdl_user.lastname,'&subject=',REPLACE(ros_score.`subject`, ' ', '+')) AS id,
-														mdl_user.institution
-										FROM
-														ros_score
-										INNER JOIN mdl_user ON ros_score.uid = mdl_user.id
-										INNER JOIN ros_subject ON ros_subject.`name` = ros_score.`subject`
+													mdl_quiz_attempts.quiz");
 										
-										WHERE
-													mdl_user.username = 'teeprk' AND
-													ros_score.max = ros_score.added AND
-													ros_subject.vision = 1
-													".$not1."
-										ORDER BY 7");
+										
+										
+										
+										
 						
 														
 						//don't show remark moodle
@@ -470,16 +496,20 @@
 						$not1="AND ros_score.id NOT IN (".$not1.")";
 						}					
 						
-							$result=mysql_query("SELECT
+							$result=mysql_query("SELECT DISTINCT
+													
 													mdl_user.idnumber,
 													mdl_user.firstname,
 													mdl_user.lastname,
 													mdl_quiz_attempts.attempt,
 													mdl_course.fullname,
+													mdl_course.shortname,
 													mdl_quiz_attempts.sumgrades,
 													mdl_quiz_attempts.timefinish,
 													mdl_quiz_attempts.id,
 													mdl_user.institution
+												
+													
 											FROM
 													mdl_quiz_attempts
 											INNER JOIN mdl_user ON mdl_user.id = mdl_quiz_attempts.userid
@@ -487,32 +517,10 @@
 											INNER JOIN mdl_course ON mdl_quiz.course = mdl_course.id
 											WHERE
 													mdl_quiz_attempts.sumgrades = mdl_quiz.sumgrades and
-													mdl_course.visible = 1 and
-													mdl_user.institution = '".$_GET[sel_product]."'
-													".$not."
+													mdl_course.visible = 1
 											GROUP BY
 													mdl_user.id,
-													mdl_quiz_attempts.quiz
-											union all SELECT
-														mdl_user.idnumber,
-														mdl_user.firstname,
-														mdl_user.lastname,
-														ros_score.added,
-														ros_score.`subject`,
-														ros_score.max,
-														ros_score.date_time,
-														CONCAT('m',ros_score.id,'&fname=',mdl_user.firstname,'&lname=',mdl_user.lastname,'&subject=',REPLACE(ros_score.`subject`, ' ', '+')) AS id,
-														mdl_user.institution
-										FROM
-														ros_score
-										INNER JOIN mdl_user ON ros_score.uid = mdl_user.id
-										INNER JOIN ros_subject ON ros_subject.`name` = ros_score.`subject`
-										WHERE
-													mdl_user.institution = '".$_GET[sel_product]."' AND
-													ros_score.max = ros_score.added AND
-													ros_subject.vision = 1
-													".$not1."
-										ORDER BY 7");
+													mdl_quiz_attempts.quiz");
 						
 						
 										
@@ -618,15 +626,18 @@
 					$a[$i][1]=$data['firstname'].' '.$data['lastname'];
 					$a[$i][2]=$data['fullname'];
 					$a[$i][3]=$data['timefinish'];
+					$a[$i][4]=$data['sumgrades'];
 					$a[$i][5]=$data['institution'];
+					//$a[$i][8]=$data['shortname'];
+					$a[$i][8]=$data['courseid'];
 					$i++;
 					}
 					
 					
-					
+				
 					
 					$u=1;
-						echo"<tr><th>No.</th><th>E/N</th><th>Name</th><th>Course</th><th>Time/(status)</th><th>RemainTime/remark/sup</th></tr>";
+						echo"<tr><th>No.</th><th>E/N</th><th>Name</th><th>Score</th><th>Percent</th><th>Course ID</th><th>Course Name</th><th>Time</th></tr>";
 				/*		$result1=mysql_query("SELECT
 												mdl_user.idnumber,
 												mdl_user.firstname,
@@ -789,8 +800,8 @@
 						
 							$today = getdate($a[$i][3]);
 							
-							$nextyear  = mktime(0, 0, 0, $today['mon'],$today['mday'],   $today['year']+1);
-							$today = getdate($nextyear);
+							//$nextyear  = mktime(0, 0, 0, $today['mon'],$today['mday'],   $today['year']+1);
+							//$today = getdate($nextyear);
 							if(strlen($today['mon'])<=1){
 								$today['mon']='0'.$today['mon'];
 							}
@@ -798,13 +809,12 @@
 								$today['mday']='0'.$today['mday'];
 							}
 							$a[$i][3]=$today['mon'].'/'.$today['mday'].'/'.$today['year'];
-							$a[$i][4]=duration($today['year'].'-'.$today['mon'].'-'.$today['mday'] ."00:00:01",date("Y-m-d H:i:s"));
+							//$a[$i][4]=duration($today['year'].'-'.$today['mon'].'-'.$today['mday'] ."00:00:01",date("Y-m-d H:i:s"));
 	
-						if($a[$i][4]>14||$a[$i][4]=='expire'){
-							continue;
-						}
-	
-							echo"<tr><td align=center>".$u++.".</td><td>".$a[$i][0]."</td><td>{$a[$i][1]}</td><td>{$a[$i][2]}</td><td>".$a[$i][3]; if(@in_array($idat, $notshow3)){ echo"&nbsp;&nbsp;<a href=super_admin-show14.php?id=".$idat."><img src=images/show1.gif></a>";}else{echo"&nbsp;&nbsp<a href=super_admin-notshow14.php?id=".$idat."><img src=images/hide1.gif></a>";}echo"</td><td>";if($a[$i][4]=='expire'){echo "<a href=expire.php?id=".$idat.">expire</a>";}else {echo $a[$i][4];}echo"&nbsp;&nbsp;<input name=\"btnButton1\" type=\"button\" value=\"S\" OnClick=\"JavaScript:fncAlert('".ucwords($a[$i][5])."');\"></td></tr>";
+						
+							if($strSelectDate==$a[$i][3]){
+							echo"<tr><td align=center>".$u++.".</td><td align=right>".$a[$i][0]."</td><td>{$a[$i][1]}</td><td align=right>".number_format($a[$i][4], 2, '.', ' ')."</td><td align=center>".number_format(($a[$i][4]*100)/$a[$i][4], 2, '.', ' ')."%</td><td>{$a[$i][8]}</td><td>{$a[$i][2]}</td><td>".$a[$i][3]."</td></tr>";
+							}
 						}
 					
 					if($u==1){
