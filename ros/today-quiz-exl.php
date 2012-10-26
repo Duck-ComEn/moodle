@@ -18,7 +18,7 @@ function duration($begin,$end){
 	}else return $wan;
 }
 header("Content-Type: application/vnd.ms-excel");
-header('Content-Disposition: attachment; filename="report-warnning-all.xls"');
+header('Content-Disposition: attachment; filename="report-quiz-all.xls"');
 if($_GET[sup]=='All' || $_GET[sup]==''){
 						// notshow								
 						$result1=mysql_query("SELECT
@@ -567,11 +567,11 @@ if($_GET[sup]=='All' || $_GET[sup]==''){
 							//$a[$i][4]=duration($today['year'].'-'.$today['mon'].'-'.$today['mday'] ."00:00:01",date("Y-m-d H:i:s"));
 							
 						
-						if(date("m/d/Y")==$a[$i][3]){
-							echo"<tr><td align=center>".$u++.".</td><td>".$a[$i][0]."</td><td>{$a[$i][1]}</td><td>".number_format($a[$i][4], 2, '.', ' ')."</td><td>".number_format(($a[$i][4]*100)/$a[$i][4], 2, '.', ' ')."%</td><td>{$a[$i][8]}</td><td>{$a[$i][2]}</td><td>".$a[$i][3]."</td></tr>";
+						if($_GET['str']==$a[$i][3]){
+							echo"<tr><td align=center>".$u++.".</td><td>".$a[$i][0]."</td><td>{$a[$i][1]}</td><td align=center>".number_format($a[$i][4], 2, '.', ' ')."</td><td>".number_format(($a[$i][4]*100)/$a[$i][4], 2, '.', ' ')."%</td><td>{$a[$i][8]}</td><td>{$a[$i][2]}</td><td>".$a[$i][3]."</td></tr>";
 							}
 					
-				echo"</table>";
-				}
 				
+				}
+				echo"</table>";
 ?>

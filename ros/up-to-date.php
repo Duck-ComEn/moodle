@@ -1,5 +1,6 @@
 ﻿<?php
 	require_once('Connections/ros.php');
+require_once('calendar/calendar/classes/tc_calendar.php');
 	if(!isset($_SESSION)){
 	@session_start();
 	}
@@ -7,7 +8,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-		
+	<link href="calendar/calendar/calendar.css" rel="stylesheet" type="text/css" />
+	<script language="javascript" src="calendar/calendar/calendar.js"></script>
+
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<script language="javascript">
 	function fncAlert(name)
@@ -15,6 +18,13 @@
 	alert('หัวหน้างานของพนักงานคนนี้คือ : คุณ '+name);
 	}
 	</script>
+	<style type="text/css">
+	body { font-size: 11px; font-family: "verdana"; }
+	pre { font-family: "verdana"; font-size: 10px; background-color: #FFFFCC; padding: 5px 5px 5px 5px; }
+	pre .comment { color: #008000; }
+	pre .builtin { color:#FF0000;  }
+	</style>
+	
 	<link type="text/css" href="jquery-ui-1.7.2.custom/css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />	
 		<script type="text/javascript" src="jquery-ui-1.7.2.custom/js/jquery-1.3.2.min.js"></script>
 		<script type="text/javascript" src="jquery-ui-1.7.2.custom/js/jquery-ui-1.7.2.custom.min.js"></script>
@@ -158,9 +168,38 @@
 						<label>
 							
 						</label>
-				  </form>
-			    </div>
-				<div><a href="today-quiz-pdf.php" target="_blank"><img src="images/PDF_Logo.png" align="right" border="0" width="64" height="64"></a><a href="today-quiz-exl.php" target="_blank"><img src="images/Excel2007Logo.png" align="right" border="0" width="60" height="64"></a></div>
+				  </form> 
+				  
+				  <form name="form1" method="get" action="">
+              <div style="float: left;">
+                <div style="float: left;">
+                  <?php
+					  $myCalendar = new tc_calendar("date", true, false);
+					  $myCalendar->setIcon("calendar/calendar/images/iconCalendar.gif");
+					 // $myCalendar->setDate(date('d', strtotime($date2)), date('m', strtotime($date2)), date('Y', strtotime($date2)));
+					  $myCalendar->setPath("calendar/calendar/");
+					  $myCalendar->setYearInterval(2012, 2050);
+					  //$myCalendar->dateAllow("", '2009-11-03', false);
+					  $myCalendar->setAlignment('left', 'bottom');
+					  //$myCalendar->setSpecificDate(array("2011-04-01", "2011-04-04", "2011-12-25"), 0, 'year');
+					  $myCalendar->writeScript();showInput
+					  ?>
+                </div>
+              </div>
+              <p> <input type="submit" name="button2" id="button2" value="Check the value" >   </p>
+			  </form>
+			  
+	    </div>
+		<br>
+		<?php
+		$dateSelect=$_GET['date'];
+		list($y,$m,$d)=explode('-',$dateSelect);
+		$strSelectDate=$m.'/'.$d.'/'.$y;
+		echo "select date: $strSelectDate";
+		?>
+		
+				
+				<div><a href="today-quiz-pdf.php?str=<?php echo $strSelectDate;?>" target="_blank"><img src="images/PDF_Logo.png" align="right" border="0" width="64" height="64"></a><a href="today-quiz-exl.php?str=<?php echo $strSelectDate;?>" target="_blank"><img src="images/Excel2007Logo.png" align="right" border="0" width="60" height="64"></a></div>
 			</div>
 			<div class="body_textarea">
 				<div id="mytable">
@@ -773,8 +812,8 @@
 							//$a[$i][4]=duration($today['year'].'-'.$today['mon'].'-'.$today['mday'] ."00:00:01",date("Y-m-d H:i:s"));
 	
 						
-							if(date("m/d/Y")==$a[$i][3]){
-							echo"<tr><td align=center>".$u++.".</td><td>".$a[$i][0]."</td><td>{$a[$i][1]}</td><td>".number_format($a[$i][4], 2, '.', ' ')."</td><td>".number_format(($a[$i][4]*100)/$a[$i][4], 2, '.', ' ')."%</td><td>{$a[$i][8]}</td><td>{$a[$i][2]}</td><td>".$a[$i][3]."</td></tr>";
+							if($strSelectDate==$a[$i][3]){
+							echo"<tr><td align=center>".$u++.".</td><td align=right>".$a[$i][0]."</td><td>{$a[$i][1]}</td><td align=right>".number_format($a[$i][4], 2, '.', ' ')."</td><td align=center>".number_format(($a[$i][4]*100)/$a[$i][4], 2, '.', ' ')."%</td><td>{$a[$i][8]}</td><td>{$a[$i][2]}</td><td>".$a[$i][3]."</td></tr>";
 							}
 						}
 					
