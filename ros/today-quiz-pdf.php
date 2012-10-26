@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once('Connections/file.php');
 if(!isset($_SESSION)){
 session_start();
@@ -18,19 +18,20 @@ function duration($begin,$end){
 	return "expire";
 	}else return $wan." Days";
 }
- 
+ $strSelectDate=$_GET['str'];
 
 require("FPDF/ThaiPDF.class.php");
 $pdf = new ThaiPDF();
 $pdf->AddThaiFont("cordia");
 $pdf->AddPage();
 $pdf->SetFont("cordia", '', 22);
-$pdf->setx(75);
-$pdf->write(11,"Report Recertification Warnning");
+$pdf->setx(60);
+$pdf->writehtml("<b>Report Recertification day:$strSelectDate</b>");
 $pdf->SetFont("cordia", '', 16);
 $pdf->SetPageNo('left', 'Page: ', '/', 
  					'', 'I', '12');
 $pdf->AddPageNo();
+
 
 
 
@@ -393,7 +394,7 @@ $pdf->AddPageNo();
 					
 					
 					$u=1;
-						$table.="<br><br><br><table border=1><tr><td width=45 bgcolor=#cccccc align=center>No.</td><td width=50 bgcolor=#cccccc align=center>E/N</td><td width=200 bgcolor=#cccccc align=center>Name</td><td width=45 bgcolor=#cccccc align=center>Score</td><td width=45 bgcolor=#cccccc align=center>Percent</td><td width=100 bgcolor=#cccccc align=center>Course ID</td><td width=200 bgcolor=#cccccc align=center>Course Name</td><td width=100 bgcolor=#cccccc align=center>Time</td></tr>";
+						$table.="<br><br><br><table border=1><tr><td width=45 bgcolor=#cccccc align=center>No.</td><td width=60 bgcolor=#cccccc align=center>E/N</td><td width=150 bgcolor=#cccccc align=center>Name</td><td width=50 bgcolor=#cccccc align=center>Score</td><td width=70 bgcolor=#cccccc align=center>Percent</td><td width=80 bgcolor=#cccccc align=center>Course ID</td><td width=200 bgcolor=#cccccc align=center>Course Name</td><td width=100 bgcolor=#cccccc align=center>Time</td></tr>";
 						$i=0;
 						while(@$datanot=mysql_fetch_array($resultnot)){
 						$notshow[$i]=$datanot['id'];
@@ -507,8 +508,8 @@ $pdf->AddPageNo();
 	
 						
 
-							if(date("m/d/Y")==$a[$i][3]){
-							$table.="<tr><td width=45 align=center>".$u++.".</td><td width=50 align=center>".$a[$i][0]."</td><td>".$a[$i][1]."</td><td width=45>".number_format($a[$i][4], 2, '.', ' ')."</td><td width=45>".number_format(($a[$i][4]*100)/$a[$i][4], 2, '.', ' ')."%</td><td width=100 align=center>".$a[$i][8]."</td><td width=200 align=center>".$a[$i][2]."</td><td align=center width=80>".$a[$i][3]."</td></tr>";
+							if($_GET['str']==$a[$i][3]){
+							$table.="<tr><td width=45 align=center>".$u++.".</td><td width=60 align=right>".$a[$i][0]."</td><td width=150>".$a[$i][1]."</td><td width=50 align=center>".number_format($a[$i][4], 0, '.', ' ')."</td><td width=70>".number_format(($a[$i][4]*100)/$a[$i][4], 2, '.', ' ')."%</td><td width=80 align=center>".$a[$i][8]."</td><td width=200 align=center>".$a[$i][2]."</td><td align=center width=100>".$a[$i][3]."</td></tr>";
 							}
 						}
 //$table="<br><br><br><table border=1>";
