@@ -93,6 +93,9 @@ require_once('calendar/calendar/classes/tc_calendar.php');
 			ul#icons span.ui-icon {float: left; margin: 0 4px;}
 		</style>	
 	<?php
+		$dateSelect=$_GET['date'];
+		list($y,$m,$d)=explode('-',$dateSelect);		
+		$strSelectDate=$m.'/'.$d.'/'.$y;
 		switch($_SESSION['MM_UserRight']){
 		case "superadmin" : 
 	?>
@@ -141,9 +144,11 @@ require_once('calendar/calendar/classes/tc_calendar.php');
 		<div class="midarea">
 			<div class="head">Welcome <?php print ucfirst($_SESSION['MM_FirstName']).' '.ucfirst($_SESSION['MM_LastName']) ;?></div>
 			<div class="body_textarea">
-				<div align="justify" style="font-size: 16pt">รายชื่อพนักงานที่ทำการทดสอบวันนี้</div>
+			
+			
+				<div align="justify" style="font-size: 16pt">รายชื่อพนักงานที่ทำการทดสอบวันที่ <?php echo $strSelectDate; ?></div>
 				<div align="justify">
-				  <p>แสดงรายชื่อพนักงานทั้งหมดที่มีอยู่ในฐานข้อมูล</p>
+				  
 				  <p>&nbsp;</p>
 				  <form id="form1" name="form1" method="get" action="super_admin-warn-7day.php">
 				                   
@@ -186,17 +191,12 @@ require_once('calendar/calendar/classes/tc_calendar.php');
 					  ?>
                 </div>
               </div>
-              <p> <input type="submit" name="button2" id="button2" value="Check the value" >   </p>
+              <p> <input type="submit" name="button2" id="button2" value="ยืนยัน" >   </p>
 			  </form>
 			  
 	    </div>
-		<br>
-		<?php
-		$dateSelect=$_GET['date'];
-		list($y,$m,$d)=explode('-',$dateSelect);
-		$strSelectDate=$m.'/'.$d.'/'.$y;
-		echo "select date: $strSelectDate";
-		?>
+	
+		
 		
 				
 				<div><a href="today-quiz-pdf.php?str=<?php echo $strSelectDate;?>" target="_blank"><img src="images/PDF_Logo.png" align="right" border="0" width="64" height="64"></a><a href="today-quiz-exl.php?str=<?php echo $strSelectDate;?>" target="_blank"><img src="images/Excel2007Logo.png" align="right" border="0" width="60" height="64"></a></div>
