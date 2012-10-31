@@ -310,6 +310,7 @@
 											GROUP BY
 													mdl_user.id,
 													mdl_quiz_attempts.quiz
+													
 											union all SELECT
 														mdl_user.idnumber,
 														mdl_user.firstname,
@@ -324,6 +325,7 @@
 														ros_score
 										INNER JOIN mdl_user ON ros_score.uid = mdl_user.id
 										INNER JOIN ros_subject ON ros_subject.`name` = ros_score.`subject`
+										
 										WHERE
 													mdl_user.username = 'teeprk' AND
 													ros_score.max = ros_score.added AND

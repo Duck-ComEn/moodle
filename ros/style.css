@@ -586,12 +586,17 @@ A.fotterlink:active
 	padding-left: 5px;
 }
 div.sending{
+text-align:left;
+padding:20px;
 display:block;
 width:600px;
-padding:10px;
-border:5px solid gray;
 margin:0px;
-
+font-size:20px;
+border:5px solid gray;
+-webkit-border-radius: 10px;
+border-radius: 10px;
+-webkit-box-shadow: inset -2px 1px 2px 3px rgba(0, 0, 1, .3);
+ box-shadow: inset -2px 1px 2px 3px rgba(0, 0, 1, .3);
 }
 /*------------------------------------------------fotterlinksend--------------------
 ------------------------------------------------validation --------------------*/
