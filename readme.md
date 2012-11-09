@@ -1,3 +1,4 @@
+	<?php echo "Welcome";?>
 QUICK INSTALL
 =============
 
@@ -26,4 +27,5 @@ For more information, see the INSTALL DOCUMENTATION:
 
 Good luck and have fun!
 Martin Dougiamas, Lead Developer
+
 
