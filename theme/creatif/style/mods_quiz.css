@@ -1,0 +1,7 @@
+#page-mod-quiz-edit .questionbankwindow div.header {
+	background-color: inherit !important;
+}
+#page-mod-quiz-edit .questionbankwindow div.header a {
+	text-decoration:none;
+	color:inherit;
+}
