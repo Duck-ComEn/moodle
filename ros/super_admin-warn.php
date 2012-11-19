@@ -182,58 +182,7 @@
 								return "expire";
 							}else return $wan."วัน";
 						}
-						/*$result1=mysql_query("SELECT
-												ros_remark.atid,
-												ros_remark.remark,
-												ros_remark.date,
-												ros_remark.notvisible,
-												ros_remark.id,
-												ros_remark.manual
-											FROM
-												ros_remark
-											WHERE ros_remark.atid <> ''");
-						@$num_rows1=mysql_num_rows($result1);
-						$r=1;
-						while($remark=mysql_fetch_array($result1)){
-						$not.="'$remark[atid]'";
-		
-						if($r!=$num_rows1){
-						$not.=',';
-						}
-						$r++;
-						}
-						if($not!=''){
-						$not="and mdl_quiz_attempts.id NOT IN(".$not.")";
-						}
-
 						
-						
-						$result3=mysql_query("SELECT
-													ros_remark.atid,
-													ros_remark.remark,
-													ros_remark.date,
-													ros_remark.notvisible,
-													ros_remark.id,
-													ros_remark.manual
-												FROM
-													ros_remark
-												WHERE
-													ros_remark.manual <> ''");
-						@$num_rows3=mysql_num_rows($result3);
-						$r=1;
-						while($remark1=mysql_fetch_array($result3)){
-						$not1.="'$remark1[manual]'";
-		
-						if($r!=$num_rows3){
-						$not1.=',';
-						}
-						$r++;
-						}
-
-						if($not1!=''){
-						$not1="AND ros_score.id NOT IN (".$not1.")";
-						}
-						*/
 			
 						if($_GET[sel_product]=='All' || $_GET[sel_product]==''){
 						// notshow								
