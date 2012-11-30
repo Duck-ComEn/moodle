@@ -1616,7 +1616,7 @@ class mod_hotpot_attempt_hp_6_renderer extends mod_hotpot_attempt_hp_renderer {
      * @return xxx
      */
     function get_feedback_teachers()  {
-        $context = get_context_instance(CONTEXT_COURSE, $this->hotpot->source->courseid);
+        $context = context_course::instance($this->hotpot->source->courseid);
         $teachers = get_users_by_capability($context, 'mod/hotpot:grade');
         if (! $teachers) {
             return '';
@@ -3037,6 +3037,9 @@ class mod_hotpot_attempt_hp_6_renderer extends mod_hotpot_attempt_hp_renderer {
         $c_max = 0;
         $this->get_jcross_grid($row, $r_max, $c_max);
 
+        // may need to convert entities to utf8
+        $textlib = hotpot_get_textlib();
+
         $clue_i = 0; // clue index;
         $str = '';
         for ($r=0; $r<=$r_max; $r++) {
@@ -3049,6 +3052,7 @@ class mod_hotpot_attempt_hp_6_renderer extends mod_hotpot_attempt_hp_renderer {
                     // get the definition for this word
                     $def = '';
                     $word = ($direction=='A') ? $aword : $dword;
+                    $word = $textlib->utf8_to_entities($word);
 
                     $i = 0;
                     $clues = 'data,crossword,clues,item';

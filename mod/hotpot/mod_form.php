@@ -719,7 +719,7 @@ class mod_hotpot_mod_form extends moodleform_mod {
         $errors = array();
 
         // get the $files specified in the form
-        $usercontext = get_context_instance(CONTEXT_USER, $USER->id);
+        $usercontext = context_user::instance($USER->id);
         $fs = get_file_storage();
         $files = $fs->get_area_files($usercontext->id, 'user', 'draft', $data['sourceitemid'], 'sortorder, id', 0); // files only, no dirs
 

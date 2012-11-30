@@ -84,7 +84,7 @@ body {margin:auto 0px;width:auto;}
 .pagelayout-report #report-region-wrap {width:0;float:right;position:relative;left:-100%;}
 .pagelayout-report #report-region-pre {width:200px;}
 .pagelayout-report #page-footer {float:none;}
-.pagelayout-report #page-content .region-content {overflow:invisible;}
+.pagelayout-report #page-content .region-content {overflow:visible;}
 
 /** Correct for content only **/
 .pagelayout-report.content-only #report-main-content .region-content {margin-left:0;}

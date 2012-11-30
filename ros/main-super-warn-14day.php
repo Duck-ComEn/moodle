@@ -1,6 +1,5 @@
 ﻿<?php
 	require_once('Connections/ros.php');
-	require_once('Connections/file.php');
 	if(!isset($_SESSION)){
 	@session_start();
 	}
@@ -116,9 +115,9 @@
 										ORDER BY
 											ros_menu.sort ASC");
 						@$num_rows=mysql_num_rows($result);
-						/*if(!$num_rows){
+						if(!$num_rows){
 							echo "Can not connect Database";
-						}*/
+						}
 						while($data = mysql_fetch_array($result)){
 						?>
 						<a href="<?php echo $data['link'] ;?>" class="left_menu"><?php echo $data['name']; ?></a><br />
@@ -401,9 +400,9 @@
 							
 							
 							@$num_rows=mysql_num_rows($result);
-							/*if(!$num_rows){
+							if(!$num_rows){
 							echo "can not connect database";
-							}*/
+							}
 							$p=1;
 							$t=0;
 							

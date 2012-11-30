@@ -171,7 +171,8 @@ abstract class quiz_attempts_report_table extends table_sql {
             return  '-';
         }
     }
-    public function col_course($attempt) {
+	//Add Course IDNumber
+    public function col_couse($attempt) {
          global $COURSE;
         if ($attempt->attempt) {               
             return $COURSE->idnumber;
@@ -179,20 +180,22 @@ abstract class quiz_attempts_report_table extends table_sql {
             return  '-';
         }
     }
-    public function col_percent($attempt) {
-        global $quiz;
-        if ($attempt->attempt) { 
-           return number_format($attempt->sumgrades*100/$quiz->sumgrades,2,'.','').' %';
+    public function col_category($attempt) {       
+      
+	   global $COURSE;
+        if ($attempt->attempt) {               
+            return $COURSE->fullname;
         } else {
             return  '-';
         }
-    }
-    
-    
-    public function col_category($attempt) {       
-          if ($attempt->attempt) {
-               global $COURSE;
-         /* $db=mysql_connect("localhost", "root", "");
+	  
+	  
+	  
+	  
+	  
+	  /*  
+        if ($attempt->attempt) {
+          $db=mysql_connect("localhost", "root", "");
  $moodle=  mysql_select_db("moodle");
  $s="SELECT mdl_course_categories.name FROM mdl_course ,mdl_course_categories ,mdl_quiz,mdl_quiz_attempts
 where mdl_course_categories.id=mdl_course.category
@@ -200,15 +203,13 @@ and mdl_course.id=mdl_quiz.course
 and mdl_quiz.id=mdl_quiz_attempts.quiz
 and mdl_quiz_attempts.id=$attempt->attempt";   
         $result=  mysql_query($s)or die("mysql error");
-        mysql_close($db);
         while($data=mysql_fetch_array($result)){
             return $data[0];
-        */
-       return $COURSE->fullname;
         }
-        else {
+        }else {
             return  '-';
         }
+		*/
     }
 
     /**
@@ -280,13 +281,14 @@ and mdl_quiz_attempts.id=$attempt->attempt";
         $state = question_state::get($stepdata->state);
 
         $flag = '';
+		//Choose Wrong Answer
+		if($state != question_state::$gradedright ){
         if ($stepdata->flagged) {
             $flag = ' ' . $OUTPUT->pix_icon('i/flagged', get_string('flagged', 'question'),
                     'moodle', array('class' => 'questionflag'));
         }
 
         $feedbackimg = '';
-        if($state != question_state::$gradedright){
         if ($state->is_finished() && $state != question_state::$needsgrading) {
             $feedbackimg = ' ' . $this->icon_for_fraction($stepdata->fraction);
         }
@@ -301,7 +303,7 @@ and mdl_quiz_attempts.id=$attempt->attempt";
                 new popup_action('click', $url, 'reviewquestion',
                         array('height' => 450, 'width' => 650)),
                 array('title' => get_string('reviewresponse', 'quiz')));
-        }
+		}
         return $output;
     }
 

@@ -32,6 +32,7 @@ $attemptid = required_param('attempt', PARAM_INT); // The attempt to summarise.
 $PAGE->set_url('/mod/quiz/summary.php', array('attempt' => $attemptid));
 
 $attemptobj = quiz_attempt::create($attemptid);
+
 // Check login.
 require_login($attemptobj->get_course(), false, $attemptobj->get_cm());
 
@@ -66,7 +67,7 @@ $displayoptions = $attemptobj->get_display_options(false);
 // If the attempt is now overdue, or abandoned, deal with that.
 $attemptobj->handle_if_time_expired(time(), true);
 
-//If the attempt is already closed, redirect them to the review page.
+// If the attempt is already closed, redirect them to the review page.
 if ($attemptobj->is_finished()) {
     redirect($attemptobj->review_url());
 }

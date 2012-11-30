@@ -2503,7 +2503,7 @@ function print_course($course, $highlightterms = '') {
     echo html_writer::start_tag('h3', array('class'=>'name'));
 
     $linkhref = new moodle_url('/course/view.php', array('id'=>$course->id));
-
+// create link coursename
     $coursename = get_course_display_name_for_list($course);
     $linktext = highlight($highlightterms, format_string($coursename));
     $linkparams = array('title'=>get_string('entercourse'));
@@ -2557,6 +2557,55 @@ function print_course($course, $highlightterms = '') {
             $fullname = fullname($ra, $canviewfullnames);
             $namesarray[$ra->id] = format_string($ra->rolename).': '.
                 html_writer::link(new moodle_url('/user/view.php', array('id'=>$ra->id, 'course'=>SITEID)), $fullname);
+			
+		//math course owner create by Ped & toto	
+			//echo $fullname;
+			//echo $coursename;
+			require_once("../config.php");
+			$con=@mysql_connect($CFG->dbhost,$CFG->dbuser,$CFG->dbpass);
+			mysql_select_db($CFG->dbname , $con);
+			$checktable="select * from math_course_owner";
+			//check has database ?
+			//yes
+			
+			if(@mysql_query($checktable)){
+				
+				$found=0;
+				$res=@mysql_query("select * from math_course_owner ");
+				
+				while($data=mysql_fetch_array($res)){
+						
+				//echo $data['course']." <br>";
+					if($data['course']==$coursename){
+						$found=1;
+						break;
+					}
+					else $found=0;
+				}
+				
+				if (!$found){
+					@mysql_query("INSERT INTO math_course_owner(course,courseowner) VALUES('".$coursename."','".$fullname."')");
+				}
+					
+			}			
+			//no
+			else{
+			
+			mysql_query("CREATE TABLE math_course_owner(
+id INT NOT NULL AUTO_INCREMENT,
+PRIMARY KEY(id),
+course VARCHAR(30),
+courseowner VARCHAR(30))");
+			
+			@mysql_query("INSERT INTO math_course_owner(course,courseowner)
+VALUES('".$coursename."','".$fullname."')");
+			
+			
+			}
+			
+			
+			//////----------------------------------
+				
         }
 
         if (!empty($namesarray)) {

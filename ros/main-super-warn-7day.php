@@ -1,6 +1,5 @@
 ﻿<?php
 	require_once('Connections/ros.php');
-	require_once('Connections/file.php');
 	if(!isset($_SESSION)){
 	@session_start();
 	}
@@ -608,10 +607,9 @@
 							}
 							if($a[$i][4]>7||$a[$i][4]=='expire'){
 							continue;
-						}else{
+						}
 	
 							echo"<tr><td align=center>".$u++.".</td><td>".$a[$i][0]."</td><td>{$a[$i][1]}</td><td>{$a[$i][2]}</td><td>".$a[$i][3]."</td><td>{$a[$i][4]}</td></tr>";
-						}
 						}
 					
 					if($u==1){

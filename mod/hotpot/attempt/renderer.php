@@ -983,27 +983,49 @@ class mod_hotpot_attempt_renderer extends mod_hotpot_renderer {
         foreach (explode(',', $css_selector) as $selector) {
             if ($selector = trim($selector)) {
                 switch (true) {
+
                     case preg_match('/^html\b/i', $selector):
                         // leave "html" as it is
                         $selectors[] = "$selector";
                         break;
+
                     case preg_match('/^body\b/i', $selector):
-                        // currently we do nothing here, so that
-                        // these styles do not affect the Moodle theme
 
-                        // replace "body" with the container element
-                        //$selectors[] = "$container";
+                        // by default, we do nothing here, so that
+                        // HP styles do not affect the Moodle theme
 
-                        // disable entire css definition
-                        //$css_definition = "\n"
-                        //    ."\t/".str_repeat('*', 20)."\n"."\t".'Hot Potatoes page styles are disabled'."\n"
-                        //    ."\t".str_repeat('*', 21)."\n".$css_definition."\t".str_repeat('*', 20)."/\n"
-                        //;
+                        // if this HotPot is set to enable HP body styles
+                        // we replace "body" with the container element
 
                         // remove font, margin, backgroud and color from the css definition
-                        //$search = "/\b(font-[a-z]+|margin-[a-z]+|background-color|color)\b[^;]*;/";
-                        //$css_definition = preg_replace($search, '/* $0 */', $css_definition);
+                        $search = array();
+                        if (isset($this->hotpot->bodystyles)) {
+                            if (! ($this->hotpot->bodystyles & hotpot::BODYSTYLES_BACKGROUND)) {
+                                // background-color, background-image
+                                $search[] = '(?:background[a-z-]*)';
+                            }
+                            if (! ($this->hotpot->bodystyles & hotpot::BODYSTYLES_COLOR)) {
+                                // color (the text color)
+                                $search[] = '(?:color[a-z-]*)';
+                            }
+                            if (! ($this->hotpot->bodystyles & hotpot::BODYSTYLES_FONT)) {
+                                // font-size, font-family
+                                $search[] = '(?:font[a-z-]*)';
+                            }
+                            if (! ($this->hotpot->bodystyles & hotpot::BODYSTYLES_MARGIN)) {
+                                // margin-left, margin-right
+                                $search[] = '(?:margin[a-z-]*)';
+                            }
+                        }
+                        if ($search = implode('|', $search)) {
+                            $search = "/[ \t]+($search)[^;]*;[ \t]*[\n\r]*/";
+                            $css_definition = preg_replace($search, '', $css_definition);
+                            if (trim($css_definition)) {
+                                $selectors[] = "$container";
+                            }
+                        }
                         break;
+
                     default:
                         // we need to do some special processing of CSS for list items
                         // override standard Moodle 2.0 setting of li {list-style-type }
@@ -1033,7 +1055,98 @@ class mod_hotpot_attempt_renderer extends mod_hotpot_renderer {
      * @param xxx $script_tags (optional, default=false)
      * @return xxx
      */
-    function fix_onload($onload, $script_tags=false)  {
+    function fix_onload($onload, $script_tags=false) {
+        static $attacheventid = 0;
+
+        $str = '';
+        if ($script_tags) {
+            $str .= "\n".'<script type="text/javascript">'."\n"."//<![CDATA[\n";
+        }
+        if ($attacheventid && $attacheventid==$this->hotpot->id) {
+            // do nothing
+        } else {
+            // only do this once per quiz
+            $attacheventid = $this->hotpot->id;
+            $str .= ''
+                ."/**\n"
+                ." * Based on http://phrogz.net/JS/AttachEvent_js.txt - thanks!\n"
+                ." * That code is copyright 2003 by Gavin Kistner, !@phrogz.net\n"
+                ." * and is covered under the license viewable at http://phrogz.net/JS/_ReuseLicense.txt\n"
+                ." */\n"
+
+                ."function hotpotAttachEvent(obj, evt, fnc, useCapture) {\n"
+                ."	// obj : an HTML element\n"
+                ."	// evt : the name of the event (without leading 'on')\n"
+                ."	// fnc : the name of the event handler funtion\n"
+                ."	// useCapture : boolean (default = false)\n"
+
+                ."	if (typeof(fnc)=='string') {\n"
+                ."		fnc = new Function(fnc);\n"
+                ."	}\n"
+
+                ."	// transfer object's old event handler (if any)\n"
+                ."	var onevent = 'on' + evt;\n"
+                ."	if (obj[onevent]) {\n"
+                ."		var old_event_handler = obj[onevent];\n"
+                ."		obj[onevent] = null;\n"
+                ."		hotpotAttachEvent(obj, evt, old_event_handler, useCapture);\n"
+                ."	}\n"
+
+                ."	// create key for this event handler\n"
+                ."	var s = fnc.toString();\n"
+                .'	s = s.replace(new RegExp("[; \\\\t\\\\n\\\\r]+", "g"), "");'."\n"
+                .'	s = s.substring(s.indexOf("{") + 1, s.lastIndexOf("}"));'."\n"
+
+                ."	 // skip event handler, if it is a duplicate\n"
+                ."	if (! obj.evt_keys) {\n"
+                ."		obj.evt_keys = new Array();\n"
+                ."	}\n"
+                ."	if (obj.evt_keys[s]) {\n"
+                ."		return true;\n"
+                ."	}\n"
+                ."	obj.evt_keys[s] = true;\n"
+
+                ."	// standard DOM\n"
+                ."	if (obj.addEventListener) {\n"
+                ."		obj.addEventListener(evt, fnc, (useCapture ? true : false));\n"
+                ."		return true;\n"
+                ."	}\n"
+
+                ."	// IE\n"
+                ."	if (obj.attachEvent) {\n"
+                ."		return obj.attachEvent(onevent, fnc);\n"
+                ."	}\n"
+
+                ."	// old browser (e.g. NS4 or IE5Mac)\n"
+                ."	if (! obj.evts) {\n"
+                ."		obj.evts = new Array();\n"
+                ."	}\n"
+                ."	if (! obj.evts[onevent]) {\n"
+                ."		obj.evts[onevent] = new Array();\n"
+                ."	}\n"
+                ."	var i = obj.evts[onevent].length;\n"
+                ."	obj.evts[onevent][i] = fnc;\n"
+                ."	obj[onevent] = new Function('var onevent=\"'+onevent+'\"; for (var i=0; i<this.evts[onevent].length; i++) this.evts[onevent][i]();');\n"
+                ."}\n"
+            ;
+        }
+        $onload_oneline = preg_replace('/\s+/s', ' ', $onload);
+        $onload_oneline = preg_replace("/[\\']/", '\\\\$0', $onload_oneline);
+        $str .= "hotpotAttachEvent(window, 'load', '$onload_oneline');\n";
+        if ($script_tags) {
+            $str .= "//]]>\n"."</script>\n";
+        }
+        return $str;
+    }
+
+    /**
+     * fix_onload_old
+     *
+     * @param xxx $onload
+     * @param xxx $script_tags (optional, default=false)
+     * @return xxx
+     */
+    function fix_onload_old($onload, $script_tags=false)  {
         static $count = 0;
         $onload_temp  = 'onload_'.sprintf('%02d', (++$count));
 
@@ -1198,10 +1311,12 @@ class mod_hotpot_attempt_renderer extends mod_hotpot_renderer {
         $tagclose = '(?(2)>|(?(3)\\\\u003E|(?(4)&gt;|(?(5)&amp;#x003E;))))'; //  right angle bracket (to match left angle bracket)
 
         $space = '\s+'; // at least one space
+        $equals = '\s*=\s*'; // equals sign (+ white space)
         $anychar = '(?:[^>]*?)'; // any character
 
-        $quoteopen = '("|\\\\"|&quot;|&amp;quot;'."|'|\\\\'|&apos;|&amp;apos;".')'; // open quote
-        $quoteclose = '\\6'; //  close quote (to match open quote)
+        $quoteopen  = '("|\\\\"|&quot;|&amp;quot;'."|'|\\\\'|&apos;|&amp;apos;".')'; // open quote
+        $quoteclose = '\\6'; // close quote (to match open quote)
+        $url        = '.*?'; // chars between quotes (non-greedy)
 
         // define which attributes of which HTML tags to search for URLs
         $tags = array(
@@ -1223,14 +1338,11 @@ class mod_hotpot_attempt_renderer extends mod_hotpot_renderer {
 
         // replace relative URLs in attributes of certain HTML tags
         foreach ($tags as $tag=>$attribute) {
-            if ($tag=='param') {
-                $url = '[^ =]+?\.[^ ]+?'; // must include a filename and have no spaces
-            } else {
-                $url = '.*?';
-            }
-            $search = "/($tagopen$tag$space$anychar$attribute=$quoteopen)($url)($quoteclose$anychar$tagclose)/is";
+            $search = "/($tagopen$tag$space$anychar$attribute$equals$quoteopen)($url)($quoteclose$anychar$tagclose)/is";
             if ($attribute=='style') {
                 $callback = array($this, 'convert_urls_css');
+            } else if ($tag=='param') {
+                $callback = array($this, 'convert_url_param');
             } else {
                 $callback = array($this, 'convert_url_relative');
             }
@@ -1272,6 +1384,23 @@ class mod_hotpot_attempt_renderer extends mod_hotpot_renderer {
         $search = '/(url\(['."'".'"]?)(.+?)(['."'".'"]?\))/is';
         $callback = array($this, 'convert_url');
         return $before.preg_replace_callback($search, $callback, $css).$after;
+    }
+
+    /**
+     * convert_url_param
+     *
+     * @param xxx $match
+     * @return xxx
+     */
+    function convert_url_param($match)  {
+        // make sure the param "name" attribute is one we know about
+        $quote = $match[6];
+        $search = "/name\s*=\s*$quote(?:data|movie|src|FlashVars)$quote/i";
+        if (preg_match($search, $match[0])) {
+            return $this->convert_url_relative($match);
+        } else {
+            return $match[0];
+        }
     }
 
     /**

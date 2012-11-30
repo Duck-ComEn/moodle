@@ -111,8 +111,8 @@ class quiz_overview_table extends quiz_attempts_report_table {
 
             $averagerow += $this->format_average_grade_for_questions($avggradebyq);
         }
-
-        $this->add_data_keyed($averagerow);
+		//Delete Overall Row
+        //$this->add_data_keyed($averagerow);
     }
 
     /**
@@ -138,8 +138,8 @@ class quiz_overview_table extends quiz_attempts_report_table {
                 $record->grade = null;
                 $record->numaveraged = 0;
             }
-
-            $row['qsgrade' . $question->slot] = $this->format_average($record, true);
+			//Delete Overall Row
+           // $row['qsgrade' . $question->slot] = $this->format_average($record, true);
         }
 
         return $row;
@@ -207,14 +207,22 @@ class quiz_overview_table extends quiz_attempts_report_table {
             }
             $newsumgrade = quiz_rescale_grade($newsumgrade, $this->quiz);
             $oldsumgrade = quiz_rescale_grade($oldsumgrade, $this->quiz);
-            $grade = html_writer::tag('del', $oldsumgrade) . '/' .
+            $grade = html_writer::tag('del', $oldsumgrade) . '***' .
                     html_writer::empty_tag('br') . $newsumgrade;
         }
         return html_writer::link(new moodle_url('/mod/quiz/review.php',
                 array('attempt' => $attempt->attempt)), $grade,
                 array('title' => get_string('reviewattempt', 'quiz')));
     }
-
+	
+	//Calculate Percent
+	public function col_percent($attempt) {
+		global $quiz;
+		
+        return number_format($attempt->sumgrades*100/$this->quiz->sumgrades,2,'.','').' %';
+    }
+	
+	
     /**
      * @param string $colname the name of the column.
      * @param object $attempt the row of data - see the SQL in display() in

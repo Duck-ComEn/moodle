@@ -27,7 +27,7 @@ $pdf->AddPage();
 $pdf->SetFont("cordia", '', 22);
 $pdf->setx(60);
 $pdf->writehtml("<b>Report Recertification day:$strSelectDate</b>");
-$pdf->SetFont("cordia", '', 16);
+$pdf->SetFont("cordia", '', 12);
 $pdf->SetPageNo('left', 'Page: ', '/', 
  					'', 'I', '12');
 $pdf->AddPageNo();
@@ -89,290 +89,50 @@ $pdf->AddPageNo();
 						if($not1!=''){
 						$not1="AND ros_score.id NOT IN (".$not1.")";
 						}							
+						
+						
 						$result=mysql_query("SELECT DISTINCT
-													
-													mdl_user.idnumber,
-													mdl_user.firstname,
-													mdl_user.lastname,
-													mdl_quiz_attempts.attempt,
-													mdl_course.fullname,
-													mdl_course.idnumber AS courseid,
-													
-													mdl_quiz_attempts.sumgrades,
-													mdl_quiz_attempts.timefinish,
-													mdl_quiz_attempts.id,
-													mdl_user.institution
-												
-													
-											FROM
-													mdl_quiz_attempts
-											INNER JOIN mdl_user ON mdl_user.id = mdl_quiz_attempts.userid
-											INNER JOIN mdl_quiz ON mdl_quiz_attempts.quiz = mdl_quiz.id
-											INNER JOIN mdl_course ON mdl_quiz.course = mdl_course.id
-											WHERE
-													mdl_quiz_attempts.sumgrades = mdl_quiz.sumgrades and
-													mdl_course.visible = 1
-											GROUP BY
-													mdl_user.id,
-													mdl_quiz_attempts.quiz");
-														
-						//don't show remark moodle
-						$result1=mysql_query("SELECT
-												mdl_user.idnumber,
-												mdl_user.firstname,
-												mdl_user.lastname,
-												ros_remark.remark,
-												mdl_course.fullname,
-												mdl_quiz_attempts.timefinish,
-												mdl_quiz_attempts.id,
-												ros_remark.date,
-												mdl_user.institution
-											FROM
-												ros_remark
-												INNER JOIN mdl_quiz_attempts ON ros_remark.atid = mdl_quiz_attempts.id
-												INNER JOIN mdl_quiz ON mdl_quiz_attempts.quiz = mdl_quiz.id
-												INNER JOIN mdl_user ON mdl_quiz_attempts.userid = mdl_user.id
-												INNER JOIN mdl_course ON mdl_quiz.course = mdl_course.id
-											where mdl_course.visible = 1");
-						//dot't view moodle
-						$resultnot=mysql_query("SELECT
-														mdl_user.idnumber,
-														mdl_user.firstname,
-														mdl_user.lastname,
-														ros_remark.remark,
-														mdl_course.fullname,
-														mdl_quiz_attempts.timefinish,
-														mdl_quiz_attempts.id,
-														ros_remark.date,
-														ros_warn_notshow.atid
-												FROM
-														ros_remark
-												INNER JOIN mdl_quiz_attempts ON ros_remark.atid = mdl_quiz_attempts.id
-												INNER JOIN mdl_quiz ON mdl_quiz_attempts.quiz = mdl_quiz.id
-												INNER JOIN mdl_user ON mdl_quiz_attempts.userid = mdl_user.id
-												INNER JOIN mdl_course ON mdl_quiz.course = mdl_course.id
-												INNER JOIN ros_warn_notshow ON mdl_quiz_attempts.id = ros_warn_notshow.atid");
-												
-						//don't show remark manual
-						$result2=mysql_query("SELECT
-												mdl_user.firstname,
-												mdl_user.lastname,
-												ros_score.`subject`,
-												ros_remark.remark,
-												ros_remark.date,
-												ros_score.next_date,
-												mdl_user.idnumber,
-												ros_remark.manual,
-												mdl_user.institution
-											FROM
-												ros_remark
-											INNER JOIN ros_score ON ros_remark.manual = ros_score.id
-											INNER JOIN mdl_user ON ros_score.uid = mdl_user.id
-											INNER JOIN ros_subject ON ros_subject.`name` = ros_score.`subject`
-											WHERE
-												ros_subject.vision = 1
-											ORDER BY 7");
-											
-						//don't view manual 					
-						$resultnot1=mysql_query("SELECT
-														mdl_user.firstname,
-														mdl_user.lastname,
-														ros_score.`subject`,
-														ros_remark.remark,
-														ros_remark.date,
-														ros_score.next_date,
-														mdl_user.idnumber,
-														ros_remark.manual
-												FROM
-														ros_remark
-												INNER JOIN ros_score ON ros_remark.manual = ros_score.id
-												INNER JOIN mdl_user ON ros_score.uid = mdl_user.id
-												INNER JOIN ros_warn_notshow ON ros_warn_notshow.manual = ros_score.id");
-														
-														
-														
-							}else {
-							$result1=mysql_query("SELECT
-													ros_remark.atid,
-													ros_remark.remark,
-													ros_remark.date,
-													ros_remark.notvisible,
-													ros_remark.id,
-													ros_remark.manual,
-													mdl_user.idnumber
-											FROM
-													ros_remark
-											INNER JOIN mdl_quiz_attempts ON ros_remark.atid = mdl_quiz_attempts.id
-											INNER JOIN mdl_user ON mdl_quiz_attempts.userid = mdl_user.id
-											WHERE
-													ros_remark.atid <> '' AND
-													mdl_user.institution = '".$_GET[sup]."'");
-						@$num_rows1=mysql_num_rows($result1);
-						$r=1;
-						while($remark=mysql_fetch_array($result1)){
-						$not.="'$remark[atid]'";
-		
-						if($r!=$num_rows1){
-						$not.=',';
-						}
-						$r++;
-						}
-						if($not!=''){
-						$not="and mdl_quiz_attempts.id NOT IN(".$not.")";
-						}
-						
-						
-						
-						$result3=mysql_query("SELECT
-													ros_remark.atid,
-													ros_remark.remark,
-													ros_remark.date,
-													ros_remark.notvisible,
-													ros_remark.id,
-													ros_remark.manual
-											FROM
-													ros_remark
-											INNER JOIN ros_score ON ros_remark.manual = ros_score.id
-											INNER JOIN mdl_user ON ros_score.uid = mdl_user.id
-											WHERE
-													ros_remark.manual <> '' AND
-													mdl_user.institution = '".$_GET[sup]."'");
-						@$num_rows3=mysql_num_rows($result3);
-						$r=1;
-						while($remark1=mysql_fetch_array($result3)){
-						$not1.="'$remark1[manual]'";
-		
-						if($r!=$num_rows3){
-						$not1.=',';
-						}
-						$r++;
-						}
-
-						if($not1!=''){
-						$not1="AND ros_score.id NOT IN (".$not1.")";
-						}					
-						
-							$result=mysql_query("SELECT DISTINCT
-													
-													mdl_user.idnumber,
-													mdl_user.firstname,
-													mdl_user.lastname,
-													mdl_quiz_attempts.attempt,
-													mdl_course.fullname,
-													mdl_course.idnumber AS courseid,
-													
-													mdl_quiz_attempts.sumgrades,
-													mdl_quiz_attempts.timefinish,
-													mdl_quiz_attempts.id,
-													mdl_user.institution
-												
-													
-											FROM
-													mdl_quiz_attempts
-											INNER JOIN mdl_user ON mdl_user.id = mdl_quiz_attempts.userid
-											INNER JOIN mdl_quiz ON mdl_quiz_attempts.quiz = mdl_quiz.id
-											INNER JOIN mdl_course ON mdl_quiz.course = mdl_course.id
-											WHERE
-													mdl_quiz_attempts.sumgrades = mdl_quiz.sumgrades and
-													mdl_course.visible = 1
-											GROUP BY
-													mdl_user.id,
-													mdl_quiz_attempts.quiz
-");
-						
-						
+						mdl_user.idnumber,
+						mdl_user.firstname,
+						mdl_user.lastname,
+						mdl_quiz_attempts.attempt,
+						mdl_course.fullname,
+						mdl_course.idnumber AS courseid,
+						mdl_quiz.sumgrades AS fullgrade,
+						mdl_quiz_attempts.sumgrades,
+						mdl_quiz_attempts.timefinish,
+						mdl_quiz_attempts.id,
+						mdl_user.institution,
+						math_course_owner.courseowner
+						from
+						mdl_quiz_attempts ,
+						mdl_user,
+						mdl_course,
+						mdl_quiz,
+						math_course_owner
+						where 
+						mdl_quiz_attempts.userid=mdl_user.id and
+						mdl_quiz_attempts.quiz=mdl_quiz.id and
+						mdl_quiz.course=mdl_course.id and
+						mdl_course.fullname=math_course_owner.course
+						order by  mdl_user.idnumber,mdl_quiz_attempts.timefinish asc
+						");
+										
+										
+										
+										
 										
 						
+														
 						
-						//don't show remark moodle
-						$result1=mysql_query("SELECT
-												mdl_user.idnumber,
-												mdl_user.firstname,
-												mdl_user.lastname,
-												ros_remark.remark,
-												mdl_course.fullname,
-												mdl_quiz_attempts.timefinish,
-												mdl_quiz_attempts.id,
-												ros_remark.date,
-												mdl_user.institution
-											FROM
-												ros_remark
-												INNER JOIN mdl_quiz_attempts ON ros_remark.atid = mdl_quiz_attempts.id
-												INNER JOIN mdl_quiz ON mdl_quiz_attempts.quiz = mdl_quiz.id
-												INNER JOIN mdl_user ON mdl_quiz_attempts.userid = mdl_user.id
-												INNER JOIN mdl_course ON mdl_quiz.course = mdl_course.id
-											WHERE
-												mdl_user.institution = '".$_GET[sup]."' and
-												mdl_course.visible = 1");
-						//dot't view moodle
-						$resultnot=mysql_query("SELECT
-														mdl_user.idnumber,
-														mdl_user.firstname,
-														mdl_user.lastname,
-														ros_remark.remark,
-														mdl_course.fullname,
-														mdl_quiz_attempts.timefinish,
-														mdl_quiz_attempts.id,
-														ros_remark.date,
-														ros_warn_notshow.atid
-												FROM
-														ros_remark
-												INNER JOIN mdl_quiz_attempts ON ros_remark.atid = mdl_quiz_attempts.id
-												INNER JOIN mdl_quiz ON mdl_quiz_attempts.quiz = mdl_quiz.id
-												INNER JOIN mdl_user ON mdl_quiz_attempts.userid = mdl_user.id
-												INNER JOIN mdl_course ON mdl_quiz.course = mdl_course.id
-												INNER JOIN ros_warn_notshow ON mdl_quiz_attempts.id = ros_warn_notshow.atid
-												WHERE
-														mdl_user.institution = '".$_GET[sup]."'");
-												
-						//don't show remark manual
-						$result2=mysql_query("SELECT
-												mdl_user.firstname,
-												mdl_user.lastname,
-												ros_score.`subject`,
-												ros_remark.remark,
-												ros_remark.date,
-												ros_score.next_date,
-												mdl_user.idnumber,
-												ros_remark.manual,
-												mdl_user.institution
-											FROM
-												ros_remark
-											INNER JOIN ros_score ON ros_remark.manual = ros_score.id
-											INNER JOIN mdl_user ON ros_score.uid = mdl_user.id
-											INNER JOIN ros_subject ON ros_subject.`name` = ros_score.`subject`
-											WHERE
-												ros_subject.vision = 1
-												mdl_user.institution = '".$_GET[sup]."'");
-											
-						//don't view manual 					
-						$resultnot1=mysql_query("SELECT
-														mdl_user.firstname,
-														mdl_user.lastname,
-														ros_score.`subject`,
-														ros_remark.remark,
-														ros_remark.date,
-														ros_score.next_date,
-														mdl_user.idnumber,
-														ros_remark.manual
-												FROM
-														ros_remark
-												INNER JOIN ros_score ON ros_remark.manual = ros_score.id
-												INNER JOIN mdl_user ON ros_score.uid = mdl_user.id
-												INNER JOIN ros_warn_notshow ON ros_warn_notshow.manual = ros_score.id
-												WHERE
-														mdl_user.institution = '".$_GET[sup]."'");
-						
-						
-						
-						
-						
+							}else {
+							
 							}
 							
 							
 							@$num_rows=mysql_num_rows($result);
 							if(!$num_rows){
-							echo "can not connect database";
+						//	echo "can not connect database";
 							}
 							$p=1;
 							$t=0;
@@ -387,6 +147,10 @@ $pdf->AddPageNo();
 					$a[$i][5]=$data['institution'];
 					//$a[$i][8]=$data['shortname'];
 					$a[$i][8]=$data['courseid'];
+					$a[$i][9]=$data['fullgrade'];
+					$a[$i][10]=$data['attempt'];
+					$a[$i][11]=$data['courseowner'];
+					
 					$i++;
 					}
 					
@@ -394,7 +158,9 @@ $pdf->AddPageNo();
 					
 					
 					$u=1;
-						$table.="<br><br><br><table border=1><tr><td width=45 bgcolor=#cccccc align=center>No.</td><td width=60 bgcolor=#cccccc align=center>E/N</td><td width=150 bgcolor=#cccccc align=center>Name</td><td width=50 bgcolor=#cccccc align=center>Score</td><td width=70 bgcolor=#cccccc align=center>Percent</td><td width=80 bgcolor=#cccccc align=center>Course ID</td><td width=200 bgcolor=#cccccc align=center>Course Name</td><td width=100 bgcolor=#cccccc align=center>Time</td></tr>";
+						//head table
+						$table.="<br><br><br><table border=1><tr><td width=25 bgcolor=#cccccc align=center><b>No.</td><td width=45 bgcolor=#cccccc align=center>E/N</td><td width=140 bgcolor=#cccccc align=center>Name</td><td width=35 bgcolor=#cccccc align=center>Score</td><td width=45	 bgcolor=#cccccc align=center>Percent</td><td width=160 bgcolor=#cccccc align=center>Course Name</td><td width=140 bgcolor=#cccccc align=center>Course Owner</b></td><td width=140 bgcolor=#cccccc align=center>Supervisor Name</b></td><td width=60 bgcolor=#cccccc align=center>Date</b></td></tr>";
+
 						$i=0;
 						while(@$datanot=mysql_fetch_array($resultnot)){
 						$notshow[$i]=$datanot['id'];
@@ -509,7 +275,8 @@ $pdf->AddPageNo();
 						
 
 							if($_GET['str']==$a[$i][3]){
-							$table.="<tr><td width=45 align=center>".$u++.".</td><td width=60 align=right>".$a[$i][0]."</td><td width=150>".$a[$i][1]."</td><td width=50 align=center>".number_format($a[$i][4], 0, '.', ' ')."</td><td width=70>".number_format(($a[$i][4]*100)/$a[$i][4], 2, '.', ' ')."%</td><td width=80 align=center>".$a[$i][8]."</td><td width=200 align=center>".$a[$i][2]."</td><td align=center width=100>".$a[$i][3]."</td></tr>";
+							//detail
+							$table.="<tr><td width=25 align=center>".$u++.".</td><td width=45 align=right> ".$a[$i][0]."</td><td width=140>".$a[$i][1]."</td><td width=35 align=center>".number_format($a[$i][4], 0, '.', ' ')."</td><td width=45 align=right>".number_format(($a[$i][4]*100)/$a[$i][9], 0, '.', ' ')." % </td><td width=160 align=center>".$a[$i][2]."</td><td width=140>".$a[$i][11]."</td><td width=140>".$a[$i][5]."</td><td align=center width=60>".$a[$i][3]."</td></tr>";
 							}
 						}
 //$table="<br><br><br><table border=1>";

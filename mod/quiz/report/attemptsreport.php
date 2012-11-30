@@ -156,16 +156,15 @@ abstract class quiz_attempts_report extends quiz_default_report {
             $headers[] = 'picture';
         }
         if (!$table->is_downloading()) {
-             $columns[] = 'idnumber';
+			$columns[] = 'idnumber';
             $headers[] = get_string('idnumber');
             $columns[] = 'fullname';
             $headers[] = get_string('name');
         } else {
-             $columns[] = 'idnumber';
+            $columns[] = 'idnumber';
             $headers[] = get_string('idnumber');
-            $columns[] = 'fullname';
+			$columns[] = 'fullname';
             $headers[] = get_string('name');
-            
         }
 
         // When downloading, some extra fields are always displayed (because
@@ -177,8 +176,8 @@ abstract class quiz_attempts_report extends quiz_default_report {
             $headers[] = get_user_field_name($field);*/
         }
 
-        /*if ($table->is_downloading()) {
-            $columns[] = 'institution';
+        if ($table->is_downloading()) {
+            /*$columns[] = 'institution';
             $headers[] = get_string('institution');
 
             $columns[] = 'department';
@@ -186,9 +185,8 @@ abstract class quiz_attempts_report extends quiz_default_report {
             
             $columns[] = 'email';
             $headers[] = get_string('email');
-            
+            */
               }
-              */
          
     }
 
@@ -212,20 +210,18 @@ abstract class quiz_attempts_report extends quiz_default_report {
      * @param array $columns the list of columns. Added to.
      * @param array $headers the columns headings. Added to.
      */
-    // Add columns Course ID and Course Name
     protected function add_state_column(&$columns, &$headers) {
         /*$columns[] = 'state';
-        $headers[] = get_string('attemptstate', 'quiz');
-         */ 
-        $columns[] = 'course';
+        $headers[] = get_string('attemptstate', 'quiz'); */
+		$columns[] = 'couse';
        $headers[] = 'Course ID';
-       $columns[] = 'category';
+	   $columns[] = 'category';
         $headers[] = 'Course Name';
-        }
-         
+		
+    }
 
-     protected function add_course_column(&$columns, &$headers) {
-      
+     protected function add_couse_column(&$columns, &$headers) {
+       
     }
      protected function add_category_column(&$columns, &$headers) {
         
@@ -260,8 +256,9 @@ abstract class quiz_attempts_report extends quiz_default_report {
             $columns[] = 'sumgrades';
             $headers[] = get_string('grade', 'quiz') . '/' .
                     quiz_format_grade($quiz, $quiz->grade);
-               $columns[] = 'percent';
-               $headers[] ='Percent';
+			
+			$columns[] = 'percent';
+            $headers[] = 'Percent';
         }
 
         if ($includefeedback && quiz_has_feedback($quiz)) {

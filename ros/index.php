@@ -8,19 +8,6 @@
 	<link href="style.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<?php
-	require_once('Connections/ros.php');
-	if(!isset($_SESSION)){
-	@session_start();
-	}
-	switch($_SESSION['MM_UserRight']){
-		
-		default :
-	}
-	
-?>
-
-	
 	<form id="form1" name="form1" method="post" action="login.php">
 	<div id="topheader">
 	<div class="logo"></div>

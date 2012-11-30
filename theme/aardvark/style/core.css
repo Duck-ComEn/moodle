@@ -29,9 +29,13 @@ border-top-right-radius:75px;
 border-bottom-left-radius:0px;
 border-bottom-right-radius:75px;
 }
-html a, body a, html a:visited, body a:visited {
-color : #333333;
+
+ html a, html a:visited,body a , body a:visited{
+color : #000;
+
+
 }
+
 td.maincalendar table.calendartable th, table.rolecap .header, .generaltable .header, .forumheaderlist .header, .files .header, .editcourse .header, .logtable .header, #attempts .header, table#categoryquestions th {
 background : #eeeeee !important ;
 }
@@ -136,12 +140,14 @@ text-decoration : none;
 
 }
 #profilename {
+
 text-align : right;
 width : 390px;
 margin-right : 0;
 margin-top : 40px;
 margin-bottom : 0;
 float : right;
+
 }
 #profilename ul li {
 padding-left : 10px;
@@ -157,16 +163,24 @@ width : 5em;
 margin-left : 4px;
 display : inline;
 font-size : 0.8em;
+color : #fff;
+text-shadow:1px 1px 0px #000;
 }
 .profilename, .profilename a {
-font-size : 1.4em;
+font-size : 1.5em;
 letter-spacing : 0px;
 text-decoration : none;
 font-weight : bold;
 margin-right : 2px;
+color : #FF6633;
+text-shadow:2px 2px 1px #000;
+
+
 }
-.profilename, .profilename a:hover {
+.profilename, .profilename a:visited {
 text-decoration : none;
+color : #FF6633;
+text-shadow:2px 2px 1px #000;
 }
 #profilebar {
 
@@ -673,10 +687,13 @@ border : 0 !important ;
 margin-left : 0;
 margin-top : 0;
 margin-bottom : 0;
+-webkit-border-radius:10px 10px 10px 10px ;
+border-radius:10px 10px 10px 10px;
 }
 #custommenu {
 
 height : 40px;
+
 }
 div.yui3-menu.yui3-menu-horizontal {
 
@@ -685,12 +702,14 @@ float : left;
 }
 
 .yui3-skin-sam .yui3-menu-horizontal .yui3-menu-label {
-    
+
 }
 
 div.yui3-menu-content {
 border : none !important ;
-background : transparent !important ;
+background : none !important ;
+    -webkit-border-radius:10px 10px 10px 10px ;
+border-radius:10px 10px 10px 10px;
 
 }
 .yui3-menu-content li a {
@@ -1323,7 +1342,7 @@ vertical-align:middle;
 
 #page-admin-index .adminwarning {
 border: 1px solid #ccc48d;
-background: #fff;
+
 }
 #page-content #region-main-box .region-content {
      padding: 3px;

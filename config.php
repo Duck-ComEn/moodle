@@ -1,4 +1,5 @@
 <?php  // Moodle configuration file
+define('CONTEXT_CACHE_MAX_SIZE', 7500);
 
 unset($CFG);
 global $CFG;
@@ -22,7 +23,7 @@ $CFG->admin     = 'admin';
 
 $CFG->directorypermissions = 0777;
 
-$CFG->passwordsaltmain = '68~aEv5RX68Mb#fVFd<+W@uC{B41n';
+$CFG->passwordsaltmain = '-R]2Ao~z=lupP?&wi}-Nf*),';
 
 require_once(dirname(__FILE__) . '/lib/setup.php');
 

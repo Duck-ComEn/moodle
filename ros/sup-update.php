@@ -104,9 +104,8 @@
 												mdl_user.institution
 											FROM
 												mdl_user
-											
 											ORDER BY
-												mdl_user.institution ASC")or die(mysql_error());
+												mdl_user.institution ASC");
 												
 												
 											

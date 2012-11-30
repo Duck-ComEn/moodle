@@ -204,11 +204,11 @@ class quiz_overview_report extends quiz_attempts_report {
             }
             //call & add data to report
             $this->add_user_columns($table, $columns, $headers); 
-           // $this->add_course_column($columns, $headers);
+            //$this->add_couse_column($columns, $headers);
             //$this->add_category_column($columns, $headers);
-            $this->add_grade_columns($quiz, $options->usercanseegrades, $columns, $headers, false);
+			$this->add_grade_columns($quiz, $options->usercanseegrades, $columns, $headers, false);
             $this->add_state_column($columns, $headers);
-            $this->add_time_columns($columns, $headers);
+			$this->add_time_columns($columns, $headers);
             
             
 
@@ -467,7 +467,7 @@ class quiz_overview_report extends quiz_attempts_report {
                     quiza.quiz = ? AND
                     quiza.preview = 0 AND
                     qqr.regraded = 0";
-        return $DB->count_records_sql($sql, $params);
+        return  $DB->count_records_sql($sql, $params);
     }
 
     /**

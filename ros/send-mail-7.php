@@ -84,7 +84,7 @@
 										ros_user_admin.firstname = '".$firstname."' AND
 										ros_user_admin.lastname ='".$lastname."'");
 			
-						
+										
 			$mail=mysql_fetch_array($result);
 			$gen=getdate();
 			$enscri='mail-link-7.php?id='.md5($gen[0].'BenchMark Electronic.');

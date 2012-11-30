@@ -1,4 +1,5 @@
 ﻿<?php
+require_once('Connections/file.php');
 	require_once('Connections/ros.php');
 	if(!isset($_SESSION)){
 	@session_start();
@@ -296,7 +297,7 @@
 								$result1=mysql_query("insert into ros_mail(link,sup,time) values('".$enscri."','".$a[$i][5]."',".$gen[0].")");
 							echo"<tr><td align=center>".$u++.".</td><td>".$a[$i][0]."</td><td>{$a[$i][1]}</td><td>{$a[$i][2]}</td><td>".$a[$i][3]; if(@in_array($idat, $notshow3)){ echo"&nbsp;&nbsp;<a href=super_admin-show.php?id=".$idat."><img src=images/show1.gif></a>";}else{echo"&nbsp;&nbsp<a href=super_admin-notshow.php?id=".$idat."><img src=images/hide1.gif></a>";}echo" <input type=checkbox name=cd[] value=".$idat."></td><td>";if($a[$i][4]=='expire'){echo "<a href=super_admin-expire.php?id=".$idat.">expire</a>";}else {echo $a[$i][4];}echo"&nbsp;&nbsp;<input name=\"btnButton1\" type=\"button\" value=\"S\" OnClick=\"JavaScript:fncAlert('".ucwords($a[$i][5])."');\"></td></tr>";
 								list($f,$l)=explode(' ',$a[$i][5]);
-								$to = $f.".".$l.'bench.com';
+								$to = $f.".".$l.'.bench.com';
 								$subject = 'Auto Mail Alert Certificate from Traning';
 								$message = "<img src=".$ipserver_path."images/search_strip.jpg><h3>เรียน คุณ ".ucfirst($a[$i][5])."</h3><br>".$messagefile.'<br>';
 								$message.="<br><a href=http://krt-lms/moodle/ros/".$enscri."><img src=".$ipserver_path."images/PDF_Logo.png height=50 width=50></a>";
@@ -348,7 +349,7 @@
 	
 	
 	
-	<?php						$to="duck_comen.RecertificationSystem@hotmail.com";
+	<?php						$to="duck_comen.moodle@hotmail.com";
 								$subject ='auto mail Recertification System';
 								$message="auto mail start ";
 								$header = "From: ".$mailsender."\r\n";	

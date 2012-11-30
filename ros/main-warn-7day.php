@@ -795,7 +795,7 @@
 							if(strlen($today['mday'])<=1){
 								$today['mday']='0'.$today['mday'];
 							}
-							$a[$i][3]=$today['mailmon'].'/'.$today['mday'].'/'.$today['year'];
+							$a[$i][3]=$today['mon'].'/'.$today['mday'].'/'.$today['year'];
 							$a[$i][4]=duration($today['year'].'-'.$today['mon'].'-'.$today['mday'] ."00:00:01",date("Y-m-d H:i:s"));
 	
 						if($a[$i][4]>7||$a[$i][4]=='expire'){

@@ -917,7 +917,6 @@ class mod_quiz_renderer extends plugin_renderer_base {
             $table->align[] = 'center';
             $table->size[] = '';
        }
-       //Percent
         if ($viewobj->gradecolumn) {
             $table->head[] = 'Percent' ;
             //. ' / ' .
@@ -977,9 +976,8 @@ class mod_quiz_renderer extends plugin_renderer_base {
                             && $quiz->grademethod == QUIZ_GRADEHIGHEST) {
                         $table->rowclasses[$attemptobj->get_attempt_number()] = 'bestrow';
                     }
-                     //return column Percent 
-                     global $quiz;
-                     $row[] = $percen= number_format($attemptobj->get_sum_marks()*100/$quiz->sumgrades,2,'.',',');
+					//Add Percent
+                   $row[] = $percen=number_format($attemptobj->get_sum_marks()/$quiz->sumgrades*100,2,'.','')."%";
                 } else {
                     $row[] = '';
                 }
@@ -991,7 +989,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
             }*/
 
             if ($viewobj->feedbackcolumn && $attemptobj->is_finished()) {
-                if ($attemptoptions->overallfeedback) {
+                
                     if($attemptobj->get_sum_marks()< quiz_format_grade($quiz, $quiz->sumgrades)){
                     $row[] = "FAIL";
                     
@@ -999,9 +997,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
                      $row[] = "PASS";   
                      
                     }
-                } else {
-                    $row[] = '';
-                }
+                
             }
 
             if ($attemptobj->is_preview()) {

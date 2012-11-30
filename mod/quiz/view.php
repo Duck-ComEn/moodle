@@ -80,8 +80,9 @@ $PAGE->set_url('/mod/quiz/view.php', array('id' => $cm->id));
 
 // Create view object which collects all the information the renderer will need.
 $viewobj = new mod_quiz_view_object();
+
 $viewobj->accessmanager = $accessmanager;
-$viewobj->canreviewmine = $canreviewmine;
+//$viewobj->canreviewmine = $canreviewmine;
 
 // Get this user's attempts.
 $attempts = quiz_get_user_attempts($quiz->id, $USER->id, 'finished', true);
@@ -128,7 +129,7 @@ if (!empty($grading_info->items)) {
     $item = $grading_info->items[0];
     if (isset($item->grades[$USER->id])) {
         $grade = $item->grades[$USER->id];
-
+        
         if ($grade->overridden) {
             $mygrade = $grade->grade + 0; // Convert to number.
             $mygradeoverridden = true;
@@ -146,6 +147,7 @@ $output = $PAGE->get_renderer('mod_quiz');
 
 // Print table with existing attempts.
 if ($attempts) {
+
     // Work out which columns we need, taking account what data is available in each attempt.
     list($someoptions, $alloptions) = quiz_get_combined_reviewoptions($quiz, $attempts, $context);
 
@@ -180,14 +182,16 @@ $viewobj->infomessages = $viewobj->accessmanager->describe_rules();
 if ($quiz->attempts != 1) {
     $viewobj->infomessages[] = get_string('gradingmethod', 'quiz',
             quiz_get_grading_option_name($quiz->grademethod));
-    //E/N
-    $viewobj->infomessages[] ="<b><font size=5>E/N </b>: <font color=blue>$USER->idnumber </font>";
-    $viewobj->infomessages[] ="<b>Name </b>: $USER->firstname  $USER->lastname</font></b>";
+	
+	// Add EN : Name		
+	$viewobj->infomessages[] ="<center><h2>E/N : ".$USER->idnumber."&nbsp;&nbsp;".$USER->firstname." ".$USER->lastname."</h2></center>";
+    
 }
 
 // Determine wheter a start attempt button should be displayed.
 $viewobj->quizhasquestions = (bool) quiz_clean_layout($quiz->questions, true);
 $viewobj->preventmessages = array();
+
 if (!$viewobj->quizhasquestions) {
     $viewobj->buttontext = '';
 
@@ -210,6 +214,7 @@ if (!$viewobj->quizhasquestions) {
             } else {
                 $viewobj->buttontext = get_string('reattemptquiz', 'quiz');
             }
+          
 
         } else if ($canpreview) {
             $viewobj->buttontext = get_string('previewquiznow', 'quiz');
@@ -218,6 +223,7 @@ if (!$viewobj->quizhasquestions) {
 
     // If, so far, we think a button should be printed, so check if they will be
     // allowed to access it.
+    
     if ($viewobj->buttontext) {
         if (!$viewobj->moreattempts) {
             $viewobj->buttontext = '';
@@ -227,17 +233,22 @@ if (!$viewobj->quizhasquestions) {
         }
     }
 }
-
+  
 echo $OUTPUT->header();
 
 if (isguestuser()) {
     // Guests can't do a quiz, so offer them a choice of logging in or going back.
     echo $output->view_page_guest($course, $quiz, $cm, $context, $viewobj->infomessages);
+    
 } else if (!isguestuser() && !($canattempt || $canpreview
           || $viewobj->canreviewmine)) {
     // If they are not enrolled in this course in a good enough role, tell them to enrol.
     echo $output->view_page_notenrolled($course, $quiz, $cm, $context, $viewobj->infomessages);
+    
 } else {
     echo $output->view_page($course, $quiz, $cm, $context, $viewobj);
+    
 }
+
+
 echo $OUTPUT->footer();
